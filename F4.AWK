@@ -170,7 +170,7 @@
  170 THIS IS DONE SO IF A NUMBER IS STORED IN MEMORY, IT CAN BE PUSHED ON THE
  171 STACK WITH TWO PUSHM'S. THE LOWER BYTE OF EACH PART IS IN THE LOWER
  172 MEMORY ADDRESS SO WHEN THE NUMBER IS POPPED INTO THE REGISTERS, THE HIGHER
- 173 ORDER BYTE WILL BE IN THE HIGHER ORDER REGISTER OF THE REGISTER PAIR, I,E,
+ 173 ORDER BYTE WILL BE IN THE HIGHER ORDER REGISTER OF THE REGISTER PAIR, I.E.
  174 THE HIGHER ORDER BYTE WILL BE POPPED INTO B, D OR H.
  175          %        
  176 PAGE     
@@ -296,7 +296,7 @@
  296 
  297 
  298 ; HERE TO SUBTRACT C,D,E,B FROM ((HL)+0,1,2),0
- 299 FAD03:   XRA      A                        ;SUBTRACT NUMBERS, NEGATE UNDERFLOW BYTE
+ 299 FADD3:   XRA      A                        ;SUBTRACT NUMBERS, NEGATE UNDERFLOW BYTE
  300          SUB      8        
  301          MOV      B,A                      ;SAVE IT
  302          MOV      A,M                      ;SUBTRACT LOW ORDERS
@@ -406,7 +406,7 @@
  406                                            ;FALL INTO ROUND AND WE ARE DONE
  407 
  408 
- 409                                            ;R OUND RESULT IN B,C,D,E AND PUT NUMBER IN THE FAC
+ 409 ; ROUND RESULT IN B,C,D,E AND PUT NUMBER IN THE FAC
  410 ; ALTERS B,C,D,E,H,L
  411 ; WE ROUND C,D,E UP OR DOWN DEPENDING UPON THE MSB OF B
  412 ROUND:   MOV      A,B                      ;SEE IF WE SHOULD ROUND UP
@@ -877,14 +877,14 @@
  877 
  878          MOV      L.A                      ;SAVE IT
  879          MOV      A,H                      ;SUBTRACT MIDDLE ORDER
- 880 FDIVE:   SBI      0        
+ 880 FDIVB:   SBI      0        
  881 
  882          MOV      H,A      
  883          MOV      A,B                      ;SUBTRACT HO
  884 FDIVA:   SBI      0        
  885 
  886          MOV      B,A      
- 887 FOIVG:   MVI      A,0                      ;GET HIGHEST ORDER
+ 887 FDIVG:   MVI      A,0                      ;GET HIGHEST ORDER
  888 
  889          SBI      0                        ;SUBTRACT THE CARRY FROM IT
  890 
@@ -955,9 +955,9 @@
  955 ; CHECK SPECIAL CASES AND ADD EXPONENTS FOR FMULT, FDIV
  956 ; ALTERS A,B,H,L
  957 IFE      LENGTH-2,<
- 958 MULOVS:  MVI      A,377                    ;ENTRY FROM DDIV, SUBTRACT EXPONENTS
+ 958 MULDVS:  MVI      A,377                    ;ENTRY FROM DDIV, SUBTRACT EXPONENTS
  959          XWD      1000,056                 ;"MVI L" AROUND NEXT BYTE
- 960 MULOVA:  XRA      A                        ;ENTRY FROM DMULT, ADD EXPONENTS
+ 960 MULDVA:  XRA      A                        ;ENTRY FROM DMULT, ADD EXPONENTS
  961          LXI      H,ARG-1                  ;GET POINTER TO SIGN AND HO OF ARG
  962          MOV      C,M                      ;GET HO AND SIGN FOR UNPACKING
  963          INX      H                        ;INCREMENT POINTER TO EXPONENT
@@ -998,7 +998,7 @@
  998          CMA                               ;PICK OVERFLOW IF POSITIVE
  999          POP      H>                       ;DON'T SCREW UP STACK
 1000 MULDV1:  ORA      A                        ;IS ERROR OVERFLOW OR UNDEFLOW?
-1001 MULOV2:  POP      H                        ;GET OLD RETURN ADDRESS OFF STACK
+1001 MULDV2:  POP      H                        ;GET OLD RETURN ADDRESS OFF STACK
 1002 IFE      LENGTH,< 
 1003          JM       OVERR                    ;OVERFLOW
 1004                                            ;UNDERFLOW -- FALL INTO ZERO
@@ -1303,7 +1303,7 @@
 1303 ; MOVE ANY TYPE VALUE FROM MEMORY [(HL)] TO FAC
 1304 ; ALTERS A,B,D,E,H,L
 1305 VMOVFA:  LXI      H,ARGLO                  ;ENTRY FROM DADD, MOVE ARG TO FAC
-1306 VMOVEM:  LXI      D,MOVVFM                 ;GET ADDRESS OF LOCATION THAT DOES
+1306 VMOVFM:  LXI      D,MOVVFM                 ;GET ADDRESS OF LOCATION THAT DOES
 1307          JMP      VMVVFM                   ;AN "XCHG" AND FALLS INTO MOVE1
 1308 
 1309 
@@ -1420,7 +1420,7 @@
 1420          INX      D                        ;POINT BACK TO EXPONENT OF ARG
 1421          INX      H                        ;POINT TO EXPONENT OF FAC
 1422          MVI      B,10                     ;SET UP A COUNT
-1423 OCOMP1:  LOAX     D                        ;GET A BYTE FROM ARG
+1423 DCOMP1:  LOAX     D                        ;GET A BYTE FROM ARG
 1424          SUB      M                        ;COMPARE IT WITH THE FAC
 1425          JNZ      FCOMPD                   ;THEY ARE DIFFERENT, GO SET UP A
 1426          DCX      D                        ;THEY ARE THE SAME, EXAMINE THE NEXT LOWER
@@ -1593,7 +1593,7 @@
 1593 ; GREATEST INTEGER FUNCTION
 1594 ; ALTERS A,B,C,D,E,H,L
 1595 IFE      LENGTH-2,<
-1596 INTENC:  CPI      4                        ;SEE WHAT KIND OF NUMBER WE HAVE
+1596 INTFNC:  CPI      4                        ;SEE WHAT KIND OF NUMBER WE HAVE
 1597          RC                                ;IT IS AN INTEGER, ALL DONE
 1598          JNZ      DINT                     ;CONVERT THE DOUBLE PRECISION NUMBER
 1599          CALL     CONIS>                   ;TRY TO CONVERT THE NUMBER TO AN INTEGER
@@ -1634,8 +1634,8 @@
 1634 
 1635 
 1636 IFE      LENGTH-2,<
-1637                                            ;GREATEST INTEGER FUNCTION FOR DOUBLE PRECISION NUMBERS
-1638                                            ;ALTERS A,B,C,D,E,H,L
+1637 ; GREATEST INTEGER FUNCTION FOR DOUBLE PRECISION NUMBERS
+1638 ; ALTERS A,B,C,D,E,H,L
 1639 DINT:    LXI      H,FAC                    ;GET POINTER TO FAC
 1640          MOV      A,M                      ;GET EXPONENT
 1641          CPI      220                      ;CAN WE CONVERT IT TO AN INTEGER?
@@ -1778,8 +1778,8 @@
 1778          JMP      FADD                     ;ADD THE TWO NUMBERS USING SINGLE PRECISION
 1779 
 1780 
-1781                                            ;INTEGER MULTIPLICATION (HL):=(DE)*(HL)
-1782                                            ;ALTERS A,B,C,D,E,H,L
+1781 ; INTEGER MULTIPLICATION (HL):=(DE)*(HL)
+1782 ; ALTERS A,B,C,D,E,H,L
 1783 IMULT:   PUSH     H                        ;SAVE SECOND ARGUMENT IN CASE OF OVERFLOW
 1784          PUSH     D                        ;SAVE FIRST ARGUMENT
 1785          CALL     IMULOV                   ;FIX UP THE SIGNS
@@ -1800,7 +1800,7 @@
 1800          JNZ      IMULT1                   ;NO, DO IT AGAIN
 1801          POP      B                        ;WE ARE DONE, GET SIGN OF RESULT
 1802          POP      D                        ;GET ORIGINAL FIRST ARGUMENT
-1803 IMLOIV:  MOV      A,H                      ;ENTRY FROM IDIV, IS RESULT ,GE, 32768?
+1803 IMLDIV:  MOV      A,H                      ;ENTRY FROM IDIV, IS RESULT ,GE, 32768?
 1804          ORA      A        
 1805          JM       IMULT3                   ;IT IS, CHECK FOR SPECIAL CASE OF -32768
 1806          POP      D                        ;RESULT IS OK, GET SECOND ARGUMENT OFF STACK
@@ -1926,7 +1926,7 @@
 1926 
 1927 ; MOD OPERATOR
 1928 ; (HL):=(DE)-(DE)/(HL)*(HL) (DE)=QUOTIENT
-1929                                            ;ALTERS A,B,C,D,E,M,L
+1929 ; ALTERS A,B,C,D,E,M,L
 1930 MOD:     PUSH     D                        ;SAVE (DE) FOR ITS SIGN
 1931          CALL     IDIV                     ;DIVIDE AND GET THE REMAINDER
 1932          XCHG                              ;PUT REMAINDER IN (DE)
@@ -2100,11 +2100,11 @@
 2100          ADC      M                        ;SETUP ADD INSTRUCTION FOR LOOP
 2101 DADDA:   LXI      H,ARGLO                  ;GET POINTER TO ARG, ENTRY FROM DADO
 2102 DADDFO:  LXI      D,DFACLO                 ;GET POINTER TO FAC, ENTRY FROM FOUT
-2103 DADOS:   MVI      C,7                      ;SET UP A COUNT
-2104          STA      DADDOP                   ;STORE THE ADD OR SUBTRACT INSTRUCTION
+2103 DADDS:   MVI      C,7                      ;SET UP A COUNT
+2104          STA      DADDDP                   ;STORE THE ADD OR SUBTRACT INSTRUCTION
 2105          XRA      A                        ;CLEAR CARRY
 2106 DADDL:   LOAX     D                        ;GET A BYTE FROM RESULT NUMBER
-2107 DADDOP:  NOP                               ;THIS IS EITHER "ADC M" OR "SBB M"
+2107 DADDDP:  NOP                               ;THIS IS EITHER "ADC M" OR "SBB M"
 2108          STAX     D                        ;SAVE THE CHANGED BYTE
 2109          INX      D                        ;INCREMENT POINTERS TO NEXT HIGHER ORDER BYTE
 2110          INX      H        
@@ -2156,7 +2156,7 @@
 2156          R2                                ;YES
 2157 DSHFRA:  LXI      H,FAC-1                  ;NO, GET POINTER TO LO, ENTRY FROM DADD, DMULT
 2158          MVI      E,10                     ;SET UP A COUNT, ROTATE FAC ONE LEFT
-2159 DSHFRS:  MOV      A,M                      ;GET A BYTE OF THE FAC
+2159 DSHFR5:  MOV      A,M                      ;GET A BYTE OF THE FAC
 2160          RAR                               ;ROTATE IT LEFT
 2161          MOV      M,A                      ;PUT THE UPDATED BYTE BACK
 2162          DCX      H                        ;DECREMENT POINTER TO NEXT LOWER ORDER BYTE
@@ -2207,12 +2207,12 @@
 2207          DCR      B                        ;ARE WE DONE?
 2208          JNZ      DMULT2                   ;NO, MULTIPLY BY NEXT HIGHER ORDER BY OF ARG
 2209          JMP      NORMAL                   ;ALL DONE, NORMALIZE AND ROUND RESULT
-2210 DMULTS:  CALL     DSHFRM                   ;SHIFT PRODUCT RIGHT ONE BYTE, WE ARE
+2210 DMULT5:  CALL     DSHFRM                   ;SHIFT PRODUCT RIGHT ONE BYTE, WE ARE
 2211          JMP      DMULT4                   ;MULTIPLYIING BY ZERO
 2212 
 2213 
-2214                                            ;CONSTANT FOR DIVIO, DDIV10
-2215 OTEN:    000                               ;10D0
+2214 ; CONSTANT FOR DIVIO, DDIV10
+2215 DTEN:    000                               ;10D0
 2216          000      
 2217          000      
 2218          000      
@@ -2242,14 +2242,14 @@
 2242          MVI      B,0                      ;ZERO FLAG TO SEE WHEN WE START DIVIDING
 2243 DDIVI:   XWD      1000,076                 ;"MVI A", SUBTRACT FBUFFR FROM ARG
 2244          SBB      M                        ;GET SUBTRACT INSTRUCTION
-2245          CALL     DADDO                    ;DO THE SUBTRACTION
+2245          CALL     DADDD                    ;DO THE SUBTRACTION
 2246          LDAX     D                        ;SUBTRACT FROM EXTRA HO BYTE
 2247          SBB      C                        ;HERE C=0
 2248          CMC                               ;CARRY=1 IF SUBTRACTION WAS GOOD
 2249          JC       DDIV2                    ;WAS IT OK?
 2250          XWD      1000,076                 ;"MVI A" NO, ADD FBUFFR BACK IN
 2251          ADC      M                        ;GET ADD INSTRUCTION
-2252          CALL     DADDO                    ;DO THE ADDITION
+2252          CALL     DADDD                    ;DO THE ADDITION
 2253          XRA      A                        ;CLEAR CARRY
 2254          XWD      1000,332                 ;"JC" OVER NEXT TWO BYTES
 2255 DDIV2:   STAX     D                        ;STORE THE NEW HIGHEST ORDER BYTE
@@ -2334,7 +2334,7 @@
 2334 
 2335 
 2336          DCX      H                        ;SET CHARACTER POINTER BACK ONE
-2337 FINI:    
+2337 FIN1:    
 2338 IFN      LENGTH-2,<
 2339          CALL     ZERO                     ;CLEAR FAC
 2340 
@@ -3158,7 +3158,7 @@
 3158 
 3159 ; HERE TO PUT THE EXPONENT AND "E" OR "D" IN THE BUFFER
 3160 ; THE EXPONENT IS IN A
-3161 FORLON:  MOV      B,A                      ;SAVE THE EXPONENT
+3161 FOFLDN:  MOV      B,A                      ;SAVE THE EXPONENT
 3162          LDA      VALTYP                   ;GET THE VALTYP TO DEIDE IF WE PRINT AN "E"
 3163          CPI      4                        ;OR A "D"
 3164          MOV      A,B                      ;GET THE EXPONENT BACK
@@ -3244,8 +3244,8 @@
 3244 ; D = THE B IN THE FORMAT SPECIFICATION
 3245 ; THIS ASSUMES THE LOCATION OF THE DECIMAL POINT IS IN TEMP2
 3246          LXI      H,FBUFFR                 ;GET A POINTER TO THE BEGINNING
-3247 FOUBE:   INX      H                        ;INCREMENT POINTER TO THE NEXT CHARACTER
-3248 FOUBES:  LDA      TEMP2                    ;GET THE LOCATION OF THE DECIMAL POINT
+3247 FOUBE1:  INX      H                        ;INCREMENT POINTER TO THE NEXT CHARACTER
+3248 FOUBE5:  LDA      TEMP2                    ;GET THE LOCATION OF THE DECIMAL POINT
 3249          SUB      L                        ;FIGURE OUT HOW MUCH SPACE WE ARE TAKING
 3250          SUB      0                        ;IS THIS THE RIGHT AMOUNT OF SPACE TO TAKE?
 3251          RZ                                ;YES, WE ARE DONE, RETURN FROM FOUT
@@ -3331,7 +3331,7 @@
 3331                                            ;C = 0 FOR DBL (THIS IS FOR COMMAS)
 3332          JM       FFXSDC                   ;IF THE FAC WAS SMALL ENOUGH, GO PRINT IT
 3333 ; HERE TO PRINT IN FREE FORMAT WITH A PERCENT SIGN A NUMBER GE. 10^16
-3334 FFXSOO:  XRA      A                        ;SET THE FORMAT SPECS TO FREE FORMAT
+3334 FFXSDO:  XRA      A                        ;SET THE FORMAT SPECS TO FREE FORMAT
 3335          STA      TEMP3    
 3336          POP      H                        ;GET THE BUFFER POINTER
 3337          DCX      H                        ;SET UP TO JUMP BACK INTO FOUT
@@ -3349,7 +3349,7 @@
 3349                                            ;D = NUMBER OF DIGITS TO PRINT IN A SNG
 3350                                            ;C = 2 (THIS IS FOR THE COMMAS)
 3351 ; HERE TO ACTUALLY PRINT A SNG OR DBL IN E NOTATION
-3352 FFXSOC:  FSIGN                             ;SEE IF WE HAVE ZERO
+3352 FFXSDC:  FSIGN                             ;SEE IF WE HAVE ZERO
 3353          CNZ      FOUTNV                   ;IF NOT, NORMALIZE THE NUMBER SO ALL DIGITS TO
 3354                                            ;BE PRINTED ARE IN THE INTEGER PART
 3355          POP      H                        ;GET THE BUFFER POINTER
@@ -4630,7 +4630,7 @@
 4630          ADR(FNS3)
 4631          ADR(SQRFIX)
 4632          ADR(SQR) 
-4633 TBOASK:                                    ;END OF ASK TABLE
+4633 TBDASK:                                    ;END OF ASK TABLE
 4634 FNS:     DC"WANT  SIN"     
 4635          0        
 4636 FNS2:    DC"WANT  RND"     
