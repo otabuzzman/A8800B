@@ -39,6 +39,7 @@ A transcript of the PDF containing the Altair 8800 BASIC source code shared by B
 |`artefacts/*.sh`|Scripts for bash and AWK processing.|
 |`F[34].AWS`|Intermediate files with processing result of step 2.|
 |`F[34].MAN`|Intermediate files with processing result of step 3.|
+|`F[34].AWK`|Intermediate files with processing result of step 4.|
 |`F[34].TRN`|Processing result of last step. The actual transcripts of F3 and F4.|
 
 ### Notes on PDF
