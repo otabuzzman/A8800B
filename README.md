@@ -9,23 +9,27 @@ A transcript of the PDF containing the Altair 8800 BASIC source code shared by B
   cat part-0*.txt |\
     ./concat_numbered_lines.sh 1 7801 |\
     ./remove_page_headers.sh BASIC |\
-    ./remove_addresses_and_opcodes.sh
+    ./remove_addresses_and_opcodes.sh |\
+    tee F3.2ND | less
   # math package
   cat part-02[5-9].txt part-03[0-8].txt |\
     ./concat_numbered_lines.sh 1 4827 |\
     ./remove_page_headers.sh MATHPK |\
-    ./remove_addresses_and_opcodes.sh
+    ./remove_addresses_and_opcodes.sh |\
+    tee F4.2ND | less
   ```
 
 3. Coarse OCR error corrections by hand
 4. Fine layout reconstruction with AWK
   ```bash
-  cat F3.MAN |\
+  cat F3.3RD |\
     ./restore_indent.sh |\
-    ./restore_comments.sh
-  cat F4.MAN |\
+    ./restore_comments.sh |\
+    tee F3.4TH | less
+  cat F4.3RD |\
     ./restore_indent.sh |\
-    ./restore_comments.sh
+    ./restore_comments.sh |\
+    tee F4.4TH | less
   ```
 
 5. Further error corrections by hand
@@ -37,10 +41,10 @@ A transcript of the PDF containing the Altair 8800 BASIC source code shared by B
 |`artefacts/part-*.pdf`|The original PDF in parts of four pages each, no larger than 5 MB.|
 |`artefacts/part-*.txt`|The raw text files from AWS Textract.|
 |`artefacts/*.sh`|Scripts for bash and AWK processing.|
-|`F[34].AWS`|Intermediate files with processing result of step 2.|
-|`F[34].MAN`|Intermediate files with processing result of step 3.|
-|`F[34].AWK`|Intermediate files with processing result of step 4.|
-|`F[34].TRN`|Processing result of last step. The actual transcripts of F3 and F4.|
+|`F[34].2ND`|Intermediate files with processing result of step 2.|
+|`F[34].3RD`|Intermediate files with processing result of step 3.|
+|`F[34].4TH`|Intermediate files with processing result of step 4.|
+|`F[34].5TH`|Processing result of last step. The actual transcripts of F3 and F4.|
 
 ### Notes on PDF
 The PDF starts with the BASIC code followed by the math package. Banner pages F3 and F4 prepend each part. F4 is followed by a page of handwritten notes, followed by a duplicate of the last page with the symbol references from F3.
