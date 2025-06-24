@@ -37,7 +37,11 @@ comment != "" {
     if ($nf ~ /;/) {
       print substr($0, index($0, ";")) ; eol = 0 ; break
     }
-    printf("%-9s", $nf)
+    if ($nf ~ /PRINTX|DC[EL]*"/) {
+        print substr($0, index($0, $nf)) ; eol = 0 ; break
+    } else {
+        printf("%-9s", $nf)
+    }
     if (nf == 2 && $nf ~/TITLE|SUBTTL/) {
       print substr($0, index($0, $3)) ; eol = 0 ; break
     }

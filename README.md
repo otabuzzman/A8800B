@@ -32,7 +32,7 @@ A transcript of the PDF containing the Altair 8800 BASIC source code shared by B
     tee F4.4TH | less
   ```
 
-5. Further error corrections by hand
+5. Iterations of steps 3 and 4 until apparently ok
 
 ### Artefacts
 |File|Description|
@@ -43,11 +43,11 @@ A transcript of the PDF containing the Altair 8800 BASIC source code shared by B
 |`artefacts/*.sh`|Scripts for bash and AWK processing.|
 |`F[34].2ND`|Intermediate files with processing result of step 2.|
 |`F[34].3RD`|Intermediate files with processing result of step 3.|
-|`F[34].4TH`|Intermediate files with processing result of step 4.|
-|`F[34].5TH`|Processing result of last step. The actual transcripts of F3 and F4.|
+|`F[34].4TH`|Processing result of step 4. The actual transcripts of F3 and F4.|
+|`F[34].MNE`|Lines with 8080 mnemonics used in F3 and F4.|
 
 ### Notes on PDF
-The PDF starts with the BASIC code followed by the math package. Banner pages F3 and F4 prepend each part. F4 is followed by a page of handwritten notes, followed by a duplicate of the last page with the symbol references from F3.
+The PDF starts with the BASIC code followed by the math package. Banner pages F3 and F4 prepend each part. F4 banner is followed by a page of handwritten notes, followed by a duplicate of the last page with the symbol references from F3.
 - [PDF page 1](https://images.gatesnotes.com/12514eb8-7b51-008e-41a9-512542cf683b/34d561c8-cf5c-4e69-af47-3782ea11482e/Original-Microsoft-Source-Code.pdf) 1st page of BASIC code
 - [page 82](https://images.gatesnotes.com/12514eb8-7b51-008e-41a9-512542cf683b/34d561c8-cf5c-4e69-af47-3782ea11482e/Original-Microsoft-Source-Code.pdf#page=82) last page of BASIC code
 - [page 100](https://images.gatesnotes.com/12514eb8-7b51-008e-41a9-512542cf683b/34d561c8-cf5c-4e69-af47-3782ea11482e/Original-Microsoft-Source-Code.pdf#page=100) 1st page of math package
