@@ -875,7 +875,7 @@
  875          MOV      A,L                      ;SUBTRACT NUMBER THAT WAS IN FAC
  876 FDIVC:   SUI      0                        ;SUBTRACT LO
  877 
- 878          MOV      L.A                      ;SAVE IT
+ 878          MOV      L,A                      ;SAVE IT
  879          MOV      A,H                      ;SUBTRACT MIDDLE ORDER
  880 FDIVB:   SBI      0        
  881 
@@ -2745,7 +2745,7 @@
 2745          PUSH     H                        ;SAVE IT FOR WHEN WE RETURN
 2746                                            ;PUT THE SIGN OF THE NUMBER IN THE BUFFER AND MAKE IT POSITIVE
 2747          FSIGN                             ;GET SIGN OF NUMBER
-2748          MVI      M,"      "               ;PRINT SPACE IF POSITIVE
+2748          MVI      M," "                    ;PRINT SPACE IF POSITIVE
 2749 
 2750          JP       FOUT1    
 2751 
@@ -3075,7 +3075,7 @@
 3075 ; SET UP B AND CONDITION CODES IF WE HAVE A TRAILING SIGN
 3076 FOUTZS:  LXI      H,FBUFFR+1               ;GET POINTER TO THE SIGN
 3077          MOV      B,M                      ;SAVE THE SIGN IN B
-3078          MVI      C,"      "               ;DEFAULT FILL CHARACTER TO A SPACE
+3078          MVI      C," "                    ;DEFAULT FILL CHARACTER TO A SPACE
 3079          LDA      TEMP3                    ;GET FORMAT SPECS TO SEE IF WE HAVE TO
 3080          MQV      E,A                      ;ASTERISK FILL, SAVE IT
 3081          ANI      40       
@@ -3115,7 +3115,7 @@
 3115 ; SIGN OF A POSITIVE NUMBER
 3116 FOUINI:  STA      TEMP3                    ;SAVE THE FORMAT SPECIFICATION
 3117          LXI      H,FBUFFR+1               ;GET A POINTER INTO FBUFFR
-3118          MVI      M,"      "               ;PUT IN A SPACE
+3118          MVI      M," "                    ;PUT IN A SPACE
 3119          RET                               ;ALL DONE
 3120 
 3121 ; HERE TO PRINT A SNG OR DBL IN FREE FORMAT
@@ -3254,7 +3254,7 @@
 3254                                            ;AND THE FIELD MUST BE SMALL ENOUGH TO FIT IN
 3255                                            ;THE BUFFER. GET THE NEXT CHARACTER IN
 3256                                            ;THE BUFFER
-3257          CPI      "        "               ;IF IT IS A SPACE OR AN ASTERISK, WE CAN
+3257          CPI      " "                      ;IF IT IS A SPACE OR AN ASTERISK, WE CAN
 3258          JZ       FOUBE1                   ;IGNORE IT AND MAKE THE FIELD SHORTER WITH
 3259          CPI      "*"                      ;NO ILL EFFECTS
 3260          JZ       FOUBE1   

@@ -2269,7 +2269,7 @@
 2269 QINLIN:  MVI      A,"?"                    ;GET A QMARK
 2270 
 2271          OUTCHR                            ;TYPE IT
-2272          MVI      A,"      "               ;SPACE
+2272          MVI      A," "                    ;SPACE
 2273 
 2274          OUTCHR                            ;TYPE IT TOO
 2275 IFE      STRING,<CALLINLIN                 ;IN THE NON-STRING VERSIONS ALL
@@ -2297,7 +2297,7 @@
 2297 
 2298 
 2299 KLOOP:   MOV      A,M                      ;GET CHARACTER FROM BUF
-2300          CPI      "        "               ;IS IT A SPACE WE WANT TO SAVE
+2300          CPI      " "                      ;IS IT A SPACE WE WANT TO SAVE
 2301 
 2302          JZ       STUFFH                   ;YES, STUFF IN DESTINATION LINE.
 2303 
@@ -2677,7 +2677,7 @@
 2677          XTHL                              ;GET LINE # INTO [H,L]
 2678                                            ;AND WE WANT [H,L] ON THE STACK
 2679          CALL     LINPRT                   ;PRINT AS INT WITOUT LEADING SPACE
-2680          MVI      A,"      "        
+2680          MVI      A," "    
 2681 PRIT4:   POP      H                        ;RESTORE POINTER TO START OF TEXT
 2682 PLOOP:   OUTCHR                            ;ALWAYS A SPACE AFTER THE LINE
 2683          MOV      A,M                      ;GET A CHARACTER FROM LINE.
@@ -3831,7 +3831,7 @@
 3831          CALL     STRPRT>                  ;PRINT THE NUMBER
 3832 
 3833 
-3834          MVI      A,"      "               ;ALWAYS END WITH A SPACE
+3834          MVI      A," "                    ;ALWAYS END WITH A SPACE
 3835 
 3836          OUTCHR   
 3837 IFN      STRING,< 
@@ -3971,7 +3971,7 @@
 3971                                            ;SPACES
 3972 ASPA2:   INR      A        
 3973 ASPAC:   MOV      B,A                      ;[B]=NUMBER OF SPACES TO PRINT
-3974          MVI      A,"      "               ;[A]=SPACE
+3974          MVI      A," "                    ;[A]=SPACE
 3975 
 3976 REPOUT:  OUTCHR                            ;PRINT [A]
 3977          DCR      B                        ;DECREMENT THE COUNT
@@ -4883,7 +4883,7 @@
 4883 
 4884 
 4885          POP      H                        ;POP OFF THE STACK OPERAND INTO THE FAC
-4886          SHLD     DFACL0+2 
+4886          SHLD     DFACLO+2 
 4887 
 4888 
 4889          POP      H        
@@ -7158,7 +7158,7 @@
 7158          CALL     STRAD2                   ;SAVE INFO IN DSCTMP
 7159 
 7160 
-7161          MOV      L.A                      ;GET # OF CHARS TO MOVE IN L
+7161          MOV      L,A                      ;GET # OF CHARS TO MOVE IN L
 7162          CALL     MOVSTR                   ;MOVE THEM IN
 7163 
 7164 
@@ -7436,7 +7436,7 @@
 7436          CALL     LINPRT                   ;PRINT AS INT WITHOUT LEADING SPACE
 7437 
 7438 
-7439          MVI      A,"      "        
+7439          MVI      A," "    
 7440 
 7441          POP      H        
 7442          OUTCHR                            ;PRINT A SPACE AFTER THE LINE #
