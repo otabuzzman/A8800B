@@ -44,6 +44,7 @@ comment != "" {
         printf("%-9s", $nf FS "\"") ; nf++ ; continue
     } else {
         printf("%-9s", $nf)
+        if (length($nf) >= 9) printf FS
     }
     if (nf == 2 && $nf ~/TITLE|SUBTTL/) {
       print substr($0, index($0, $3)) ; eol = 0 ; break
