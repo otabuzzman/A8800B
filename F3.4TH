@@ -39,13 +39,13 @@
   39          MULDIM==1
   40          STRING==1>
   41 
-  42 DEFINE   SYNCHK(A),<RST1        
+  42 DEFINE   SYNCHK(A),<RST 1        
   43          A>       
-  44 DEFINE   CHRGET,<RST2>       
-  45 DEFINE   OUTCHR,<RST3>       
-  46 DEFINE   COMPAR,<RST4>       
-  47 DEFINE   FSIGN,<RST5>       
-  48 DEFINE   PUSHM,<RST6>       
+  44 DEFINE   CHRGET,<RST 2>       
+  45 DEFINE   OUTCHR,<RST 3>       
+  46 DEFINE   COMPAR,<RST 4>       
+  47 DEFINE   FSIGN,<RST 5>       
+  48 DEFINE   PUSHM,<RST 6>       
   49 DEFINE   PUSHEM,<PUSHM
   50          PUSHM>   
   51 DEFINE   ACRLF,<  
@@ -136,7 +136,7 @@
  136 INTERNAL STREND,CURLIN,DV0ERR,ERROV
  137 IFN      REALIO,< 
  138 INTERNAL CNLCA1,CNLCA2,CNLCA3>
- 139 IFN      EXTFNC,<INTERNALATNFIX,COSFIX,SINFIX,TANFIX
+ 139 IFN      EXTFNC,<INTERNAL ATNFIX,COSFIX,SINFIX,TANFIX
  140 EXTERNAL FPWR,EXP>
  141 EXTERNAL QINT,ZERO,MOVE,FOUT,FIN,FCOMP,FADD,PUSHF,INT,INIT
  142 EXTERNAL MOVFR,MOVRF,MOVRM,INPRT,LINPRT
@@ -153,9 +153,9 @@
  153 INTERNAL MEMSIZ,FRETOP
  154 EXTERNAL SIGNS>   
  155 INTERNAL FBUFFR,MINUTK,PLUSTK,CRDO,LINGET,INTXT,QINLIN
- 156 IFN      MULDIM,<INTERNALBSERR>   
- 157 IFN      MULDIM,<EXTERNALUMULT>   
- 158 IFE      LENGTH,<INTERNALRNDFIX,SQRFIX,SINFIX>
+ 156 IFN      MULDIM,<INTERNAL BSERR>   
+ 157 IFN      MULDIM,<EXTERNAL UMULT>   
+ 158 IFE      LENGTH,<INTERNAL RNDFIX,SQRFIX,SINFIX>
  159 INTERNAL SIGN     
  160 EXTERNAL SIGNC,POPHRT
  161 IFN      CONTRW,< 
@@ -1211,7 +1211,7 @@
 1211 
 1212          ERRNF==Q 
 1213          DCE"SN"
-1214          OCL"SYNTAXERROR"   
+1214          DCL"SYNTAX ERROR"
 1215 
 1216 
 1217 
@@ -1688,7 +1688,7 @@
 1688 ARGLO:   BLOCK    7                        ;[LOCATION OF SECOND ARGUMENT FOR DOUBLE
 1689 ARG: BLOCK 1> ; PRECISION]
 1690 FBUFFR:  BLOCK    13                       ;BUFFER FOR FOUT
-1691 IFE      LENGTH-2,<BLOCK35-13>   
+1691 IFE      LENGTH-2,<BLOCK 35-13>   
 1692 PAGE     
 1693 SUBTTL   TEXT CONSTANTS FOR PRINT OUT
 1694 ; 
@@ -2112,7 +2112,7 @@
 2112 
 2113          SYNCHK   MINUTK                   ;MUST BE A DASH,
 2114 
-2115 ALLLST:  LXI      D,$CODE+-06552           ;ASSUME MAX END OF RANGE
+2115 ALLLST:  LXI      D,$CODE+^D65529          ;ASSUME MAX END OF RANGE
 2116 
 2117 
 2118          CNZ      LINGET                   ;GET THE END OF RANGE
@@ -2250,7 +2250,7 @@
 2250 
 2251 
 2252          PUSH     H                        ;ON STACK
-2253 IFN      LENGTH,<SHLDOLDTXT>               ;MAKE CONTINUING ILLEGAL
+2253 IFN      LENGTH,<SHLD OLDTXT>              ;MAKE CONTINUING ILLEGAL
 2254 
 2255 
 2256 IFN      LPTSW,<  
@@ -2259,7 +2259,7 @@
 2259 
 2260 
 2261 IFN      LENGTH,< 
-2262 IFE      CONTRW,<XRAA>       
+2262 IFE      CONTRW,<XRA A>       
 2263          STA      SUBFLG>                  ;ALLOW SUBSCRIPTS
 2264 
 2265 
@@ -2272,10 +2272,10 @@
 2272          MVI      A," "                    ;SPACE
 2273 
 2274          OUTCHR                            ;TYPE IT TOO
-2275 IFE      STRING,<CALLINLIN                 ;IN THE NON-STRING VERSIONS ALL
+2275 IFE      STRING,<CALL INLIN                ;IN THE NON-STRING VERSIONS ALL
 2276                                            ;INPUT IS CRUNCHED
 2277          INX      H>                       ;GET A LINE OF INPUT FROM TTY
-2278 IFN      STRING,<JMPINLIN>                 ;NO CRUNCHING IN THIS CASE
+2278 IFN      STRING,<JMP INLIN>                ;NO CRUNCHING IN THIS CASE
 2279 
 2280 
 2281 ; 
@@ -2410,7 +2410,7 @@
 2410 
 2411 NODATT:  SUI      REMTK-":">
 2412 
-2413 IFE      STRING,<SUIREMTK>                 ;WAS IT A REM STATEMENT
+2413 IFE      STRING,<SUI REMTK>                ;WAS IT A REM STATEMENT
 2414          JNZ      KLOOP                    ;KEEP LOOPING
 2415 
 2416 
@@ -2775,7 +2775,7 @@
 2775          XTHL                              ;NOW THE CURRENT LINE # IS ON THE STACK AND
 2776                                            ;[H,L] IS THE TEXT POINTER
 2777 IFN      LENGTH-2,<
-2778 IFN      STRING,<CALLCHKNUM>> 
+2778 IFN      STRING,<CALL CHKNUM>> 
 2779          SYNCHK   TOTK                     ;"TO" IS NECESSARY
 2780 
 2781 IFN      LENGTH-2,<
@@ -2870,7 +2870,7 @@
 2870 
 2871                                            ;TO REMEMBER HOW TO RESTART THIS
 2872                                            ;STATEMENT
-2873 IFN      LPTSW,<XRAA                       ;FORCE PRINT TO GO TO TTY AFTER LPRINT
+2873 IFN      LPTSW,<XRA A                      ;FORCE PRINT TO GO TO TTY AFTER LPRINT
 2874          STA      PRTFLG>  
 2875          MOV      A,M                      ;GET CURRENT CHARACTER
 2876                                            ;WHICH TERMINATED THE LAST STATEMENT
@@ -3645,7 +3645,7 @@
 3645          CALL     FRMEVL>                  ;PICK UP FIRST NON-RELATIONAL
 3646                                            ;CHARACTER AGAIN AND INTERPRET FORMULA
 3647                                            ;ANSWER LEFT IN FAC
-3648 IFE      LENGTH-2,<CPI44                   ;A COMMA?
+3648 IFE      LENGTH-2,<CPI 44                  ;A COMMA?
 3649 
 3650          CZ       CHRGTR>                  ;IF SO SKIP IT
 3651 
@@ -3665,7 +3665,7 @@
 3665          POPR                              ;POP OFF NUMBER
 3666 IFN      STRING   
 3667          XTHL>                             ;COMPARE FORMULA TYPES
-3668 IFE      STRING,<PUSHH>                    ;SAVE THE TEXT POINTER
+3668 IFE      STRING,<PUSH H>                   ;SAVE THE TEXT POINTER
 3669          PUSH     PSW                      ;RESAVE RELATIONAL MEMORIES
 3670 IFN      STRING,< 
 3671          LDA      VALTYP                   ;GET VALUE TYPE
@@ -3801,7 +3801,7 @@
 3801          CALL     FOUT                     ;MAKE A NUMBER INTO A STRING
 3802 
 3803 
-3804 IFE      STRING,<CALLSTROUT>               ;IF STRINGS OFF JUST OUTPUT IT
+3804 IFE      STRING,<CALL STROUT>              ;IF STRINGS OFF JUST OUTPUT IT
 3805 IFN      STRING,< 
 3806          CALL     STRLIT                   ;MAKE IT A STRING
 3807 
@@ -3901,7 +3901,7 @@
 3901          ORA      A                        ;NON-ZERO MEANS YES
 3902          JZ       ISCTTY                   ;NO, DO TELETYPE COMMA
 3903          LDA      LPTPOS                   ;GET LINE PRINTER POSITION
-3904          NLPPOS==<<<LPTLEN/CLMWID>-1>*CLMWID>;POSITION BEYOND WHICH THERE ARE
+3904          NLPPOS==<<<LPTLEN/CLMWID>-1>*CLMWID> ;POSITION BEYOND WHICH THERE ARE
 3905                                            ;NO MORE COMMA FIELDS, SO
 3906          CPI      NLPPOS                   ;COMMA JUST DOES A "CRDO"
 3907          JMP      CHKCOM                   ;USE TELETYPE CHECK
@@ -3909,7 +3909,7 @@
 3909          LDA      TTYPOS                   ;GET TELETYPE POSITION
 3910 
 3911 
-3912          NUTPOS=<<<LINLEN/CLMWID>-1>*CLMWID>;POSITION BEYOND WHICH THERE ARE
+3912          NUTPOS=<<<LINLEN/CLMWID>-1>*CLMWID> ;POSITION BEYOND WHICH THERE ARE
 3913                                            ;NO MORE COMMA FIELDS
 3914          CPI      NUTPOS                   ;SO ALL COMMA DOES IS A "CRDO"
 3915 
@@ -3934,7 +3934,7 @@
 3934 
 3935 
 3936 TABER:   
-3937 IFN      LENGTH,<PUSHPSW>                  ;REMEMBER IF [A]=SPCTK OR TABTK
+3937 IFN      LENGTH,<PUSH PSW>                 ;REMEMBER IF [A]=SPCTK OR TABTK
 3938 IFE      LENGTH,< 
 3939          CALL     INTIDXX                  ;INTEGERIZE A FORMULA INTO [D,E]
 3940 IFN      LENGTH,< 
@@ -4076,7 +4076,7 @@
 4076 GETAGN:  CALL     QINLIN                   ;TYPE '?' AND INPUT A LINE OF TEXT
 4077 
 4078 
-4079 IFN      LENGTH,<INXH                      ;IF NO INPUT WE QUIT
+4079 IFN      LENGTH,<INX H                     ;IF NO INPUT WE QUIT
 4080          MOV      A,M      
 4081          ORA      A        
 4082          DCX      H        
@@ -4143,7 +4143,7 @@
 4143          INX      H                        ;POINT AT POINTER TO NEXT LINE
 4144          JNZ      DATFND>                  ;IF IT IS A READ GO
 4145                                            ;SEARCH FOR ANOTHER DATA STATEMENT
-4146 IFN      LENGTH,<JNZDATLOP>  
+4146 IFN      LENGTH,<JNZ DATLOP>  
 4147 
 4148 
 4149          MVI      A,"?"    
@@ -4156,7 +4156,7 @@
 4156                                            ;OF THE BUFFER
 4157                                            ;AND QINLIN LEAVES [H,L]=BUF
 4158 DATBK:   
-4159 IFE      LENGTH,<POPD                      ;POP OFF POINTER TO THE VARIABLE
+4159 IFE      LENGTH,<POP D                     ;POP OFF POINTER TO THE VARIABLE
 4160          INX      H                        ;FUDGE CHARACTER POINTER
 4161          CALL     REDINP>                  ;READ A VALUE USING "LET" CODE
 4162 IFN      LENGTH,< 
@@ -4295,10 +4295,10 @@
 4295 ; DATA THE ERROR MESSAGE WILL GIVE THE LINE NUMBER OF THE
 4296 ; ILL-FORMATTED DATA
 4297 ; 
-4298 DATLOP:  IFN      LENGTH,<CALLDATA>    
+4298 DATLOP:  IFN      LENGTH,<CALL DATA>    
 4299 
 4300 
-4301 IFE      LENGTH,<POPH>       
+4301 IFE      LENGTH,<POP H>       
 4302 DATFND:  IFN      LENGTH,< 
 4303          ORA      A        
 4304          JNZ      NOWLIN>  
@@ -4314,8 +4314,8 @@
 4314          JZ       ERROR                    ;IF SO COMPLAIN
 4315 
 4316 
-4317 IFE      LENGTH,<INXH>                     ;SKIP PAST LINE #
-4318 IFN      LENGTH,<POPB        
+4317 IFE      LENGTH,<INX H>                    ;SKIP PAST LINE #
+4318 IFN      LENGTH,<POP B        
 4319          MOV      E,M                      ;GET DATA LINE #
 4320          INX      H        
 4321          MOV      D,M      
@@ -4330,7 +4330,7 @@
 4330          JNZ      DATLOP                   ;NOT DATA SO LOOK SOME MORE
 4331 
 4332 
-4333 IFE      LENGTH,<POPB>       
+4333 IFE      LENGTH,<POP B>       
 4334          JMP      DATBK                    ;CONTINUE READING
 4335 
 4336 
@@ -4359,7 +4359,7 @@
 4359 ; TOTAL 16 BYTES
 4360 ; 
 4361 NEXT:    
-4362 IFN      LENGTH,<LXID,$CODE>               ;FOR THE "NEXT"
+4362 IFN      LENGTH,<LXI D,$CODE>              ;FOR THE "NEXT"
 4363 
 4364 
 4365                                            ;STATEMENT WITHOUT ANY ARGS
@@ -4448,7 +4448,7 @@
 4448          LHLD     TEMP                     ;RESTORE THE TEXT POINTER
 4449 
 4450 
-4451 IFE      LENGTH,<JMPNEWSTT>  
+4451 IFE      LENGTH,<JMP NEWSTT>  
 4452 IFN      LENGTH,< 
 4453          MOV      A,M                      ;IS THERE A COMMA AT THE END
 4454          CPI      44                       ;IF SO LOOK AT ANOTHER
@@ -4614,7 +4614,7 @@
 4614                                            ;IF HAS GREATER OR = PRECEDENCE
 4615 IFN      LENGTH-2,<
 4616          INX      H                        ;NOW POINTING AT ROUTINE ADDRESS
-4617 IFN      STRING,<CALLCHKNUM>               ;CAN'T BE STRING HERE
+4617 IFN      STRING,<CALL CHKNUM>              ;CAN'T BE STRING HERE
 4618                                            ;SINCE THE ONLY STRING OPERATOR
 4619                                            ;IS PLUS AND RELATIONALS
 4620                                            ;DON'T COME THROUGH HERE
@@ -5250,7 +5250,7 @@
 5250 AND:     XRA      A                        ;FLAG AS "AND"
 5251 ANDCON:  
 5252          PUSH     PSW      
-5253 IFN      STRING,<CALLCHKNUM>  
+5253 IFN      STRING,<CALL CHKNUM>  
 5254          CALL     DEINT                    ;GET [D,E]=INT VALUE AND CHECK SIZE
 5255          POP      PSW      
 5256          XCHG                              ;[H,L]=INT VALUE
@@ -5285,7 +5285,7 @@
 5285          MOV      A,D                      ;GET RELATIONAL MEMORIES IN [A]
 5286          RAL                               ;MOVE CARRY BIT IN
 5287          MOV      E,A>                     ;KEEP THIS BYTE IN [E]
-5288 IFE      STRING,<MOVE,O>     
+5288 IFE      STRING,<MOV E,O>     
 5289          MVI      D,100                    ;PRECEDENCE OF ALL RELATIONAL
 5290                                            ;OPERATORS IS 100
 5291          MOV      A,B                      ;[A]=PRECEDENCE OF OLD OPERATOR
@@ -5414,7 +5414,7 @@
 5414 
 5415 NOTER:   MVI      D,90                     ;"NOT" HAS PRECEDENCE 90
 5416          CALL     LPOPER                   ;GO PERFORM
-5417 IFN      STRING,<CALLCHKNUM>               ;MAKE SURE ITS INT
+5417 IFN      STRING,<CALL CHKNUM>              ;MAKE SURE ITS INT
 5418          CALL     DEINT                    ;GET VALUE IN [D,E]
 5419          MOV      A,E      
 5420          CMA                               ;COMPLEMENT
@@ -6323,7 +6323,7 @@
 6323 
 6324 
 6325 IFN      LENGTH-2,<
-6326 IFN      STRING,<CALLCHKNUM>>              ;STRINGS ILLEGAL
+6326 IFN      STRING,<CALL CHKNUM>>             ;STRINGS ILLEGAL
 6327          SYNCHK   ")"                      ;MUST CLOSE IT WITH ")"
 6328 
 6329          SYNCHK   EQULTK                   ;MUST HAVE EQUAL
@@ -6350,7 +6350,7 @@
 6350 
 6351 
 6352 IFN      LENGTH-21
-6353 IFN      STRING,<CALLCHKNUM>>              ;ARG CANNOT BE STRING
+6353 IFN      STRING,<CALL CHKNUM>>             ;ARG CANNOT BE STRING
 6354          XTHL                              ;[H,L]=POINTER TO FUNCTION DEF
 6355                                            ;TEXT POINTER GOES ON THE STACK
 6356          PUSHM                             ;PUSH THE POINTER AT THE FORMULA
@@ -6443,7 +6443,7 @@
 6443          ORA      M                        ;PUT FUNCTION BIT ON
 6444          MOV      B,A                      ;GET FIRST CHARACTER INTO [B]
 6445 IFN      LENGTH-2,<
-6446 IFN      STRING,<CALLPTRGT2                ;REALLY GET THE POINTER
+6446 IFN      STRING,<CALL PTRGT2               ;REALLY GET THE POINTER
 6447          JMP      CHKNUM>>                 ;MAKE SURE ITS NOT A STRING NAME
 6448 IFE      STRING&<LENGTH-2>,<JMP     PTRGT2>> 
 6449 

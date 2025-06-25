@@ -36,13 +36,13 @@
   36          MULDIM==1
   37          STRING==1>
   38 
-  39 DEFINE   SYNCHK(A),<RST1        
+  39 DEFINE   SYNCHK(A),<RST 1        
   40          A>       
-  41 DEFINE   CHRGET,<RST2>       
-  42 DEFINE   OUTCHR,<RST3>       
-  43 DEFINE   COMPAR,<RST4>       
-  44 DEFINE   FSIGN,<RST5>       
-  45 DEFINE   PUSHM,<RST6>       
+  41 DEFINE   CHRGET,<RST 2>       
+  42 DEFINE   OUTCHR,<RST 3>       
+  43 DEFINE   COMPAR,<RST 4>       
+  44 DEFINE   FSIGN,<RST 5>       
+  45 DEFINE   PUSHM,<RST 6>       
   46 DEFINE   PUSHEM,<PUSHM
   47          PUSHM>   
   48 DEFINE   ACRLF,<  
@@ -4609,7 +4609,7 @@
 4609          XRA      A        
 4610          STA      PRTFLG## 
 4611          STA      LPTPOS##>
-4612 IFE      CONSSW,<LXIH,READY> 
+4612 IFE      CONSSW,<LXI H,READY> 
 4613 
 4614 
 4615 IFN      CONSSW,< 
