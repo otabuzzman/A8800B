@@ -39,6 +39,9 @@ comment != "" {
     }
     if ($nf ~ /PRINTX|DC[EL]*"/) {
         print substr($0, index($0, $nf)) ; eol = 0 ; break
+    }
+    if ($nf ~ /"$/ && $(nf + 1) ~ /^"/) {
+        printf("%-9s", $nf FS "\"") ; nf++ ; continue
     } else {
         printf("%-9s", $nf)
     }
