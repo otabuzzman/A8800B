@@ -19,7 +19,7 @@ A transcript of the PDF containing the Altair 8800 BASIC source code shared by B
     tee F4.2ND | less
   ```
 
-3. Coarse OCR error corrections by hand
+3. OCR error corrections by hand
 4. Fine layout reconstruction with AWK
   ```bash
   cat F3.3RD |\
