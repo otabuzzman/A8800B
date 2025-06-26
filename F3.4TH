@@ -966,7 +966,7 @@
  966          123      
  967          ADRP(FDIVT)
  968 IFN      EXTFNC,<127
- 969          ADRP(FPWRT))
+ 969          ADRP(FPWRT)>
  970 IFN      LENGTH,< 
  971          80       
  972          ADRP(AND)
@@ -1871,7 +1871,7 @@
 1871          SHLD     CURLIN>                  ;MAKE IT CURRENT LINE
 1872 
 1873 
-1874 SNERR:   MVI      E,ERRSN  "SYNTAX  ERROR"   
+1874 SNERR:   MVI      E,ERRSN                  ;"SYNTAX ERROR"
 1875 
 1876          XWD      ^O1000,1                 ;"LXI B," OVER THE NEXT 2
 1877 DV0ERR:  MVI      E,ERRDV0                 ;DIVISION BY ZERO
@@ -2446,7 +2446,7 @@
 2446          JMP      RESER                    ;DONE, MOVE TO NEXT RESERVED WORD
 2447 
 2448 
-2449 CROONE:  LXI      H,BUFMIN                 ;LEAVE WITH [H,L] POINTER TO START OF LINE
+2449 CRDONE:  LXI      H,BUFMIN                 ;LEAVE WITH [H,L] POINTER TO START OF LINE
 2450 
 2451 
 2452          STAX     D                        ;NEED THREE 0'S ON THE END
@@ -2612,7 +2612,7 @@
 2612 IFN      REALIO,< 
 2613 NOPRIN:  IN       0                        ;GET STATUS
 2614 
-2615          CNLCA1                            ;CONSOLE COMMAND CHANGE LOC
+2615          CNLCA1==.-1                       ;CONSOLE COMMAND CHANGE LOC
 2616          ANI      ODONE                    ;0K TO SEND CHAR
 2617 
 2618          JNZ      NOPRIN>                  ;KEEP LOOPING
@@ -2691,10 +2691,10 @@
 2691          LXI      D,RESLST                 ;GET RESLST POINTER.
 2692 RESRCH:  PUSH     D                        ;SAVE
 2693 
-2694 RESCRI:  LDAX     D                        ;GET CHARACTER FROM RESLST
+2694 RESCR1:  LDAX     D                        ;GET CHARACTER FROM RESLST
 2695          INX      D                        ;BUMP RESLST POINTER
 2696          ORA      A                        ;TEST BITS
-2697          JP       RESCRI                   ;NOT AT END OF RESERVED WORD YET
+2697          JP       RESCR1                   ;NOT AT END OF RESERVED WORD YET
 2698          DCR      C                        ;DECREMENT CHAR
 2699          POP      H                        ;POP START POINTER HERE
 2700          JNZ      RESRCH                   ;NOT AT END OF RESLST YET.
@@ -2926,7 +2926,7 @@
 2926 
 2927 
 2928          PUSH     D                        ;STATEMENT
-2929          GONE     3:       RZ              ;IF A TERMINATOR TRY AGAIN
+2929 GONE3:   RZ                                ;IF A TERMINATOR TRY AGAIN
 2930                                            ;"IF" COMES HERE
 2931 GONE2:   SUI      ENDTK                    ;"ON ... GOTO" AND "ON ... GOSUB" COME HERE
 2932 
@@ -3138,7 +3138,7 @@
 3138          MOV      D,C                      ;SETUP D=200 E=0 FOR -32768
 3139          RZ>                               ;WAS -32768. [D,E] IS SET UP
 3140 ILLFUN:  
-3141 FCERR:   MVI      E,RRFC                   ;TOO BIG. FUNCTION CALL ERROR
+3141 FCERR:   MVI      E,ERRFC                  ;TOO BIG. FUNCTION CALL ERROR
 3142          JMP      ERROR>   
 3143 IFE      LENGTH-2,<
 3144 INTIDX:  CHRGET   
@@ -3797,7 +3797,7 @@
 3797 IFN      LENGTH-2,<
 3798          LDA      VALTYP   
 3799          ORA      A        
-3800          JNZ      STROON>>                 ;WAS IT A STRING FORMULA?
+3800          JNZ      STRDON>>                 ;WAS IT A STRING FORMULA?
 3801          CALL     FOUT                     ;MAKE A NUMBER INTO A STRING
 3802 
 3803 
@@ -3837,12 +3837,12 @@
 3837 IFN      STRING,< 
 3838 IFE      LENGTH-21
 3839          ORA      A                        ;TURN OFF THE ZERO FLAG
-3840 STROON:  CZ       STRPRT>  
+3840 STRDON:  CZ       STRPRT>  
 3841 
 3842 
 3843 IFN      LENGTH-2,<
 3844          XRA      A        
-3845 STROON:  CNZ      STRPRT>>                 ;JUST PRINT STRINGS
+3845 STRDON:  CNZ      STRPRT>>                 ;JUST PRINT STRINGS
 3846          POP      H        
 3847          JMP      MORPR                    ;PRINT SOME MORE
 3848 
@@ -3880,7 +3880,7 @@
 3880          XRA      A                        ;[A]= A NULL
 3881          OUTCHR                            ;SEND IT OUT
 3882          POP      PSW                      ;RESTORE THE COUNT
-3883          JMP      PRINUL                   ;LOOP PRINTING NULLS
+3883          JMP      PRTNUL                   ;LOOP PRINTING NULLS
 3884 
 3885 
 3886 IFE      STRING,< 
@@ -3936,7 +3936,7 @@
 3936 TABER:   
 3937 IFN      LENGTH,<PUSH PSW>                 ;REMEMBER IF [A]=SPCTK OR TABTK
 3938 IFE      LENGTH,< 
-3939          CALL     INTIDXX                  ;INTEGERIZE A FORMULA INTO [D,E]
+3939          CALL     INTIDX>                  ;INTEGERIZE A FORMULA INTO [D,E]
 3940 IFN      LENGTH,< 
 3941          CALL     GTBYTC>                  ;GET VALUE INTO [E]
 3942 
@@ -3959,7 +3959,7 @@
 3959          ORA      A                        ;NON-ZERO MEANS LPT
 3960          JZ       TTYIST   
 3961          LDA      LPTPOS                   ;GET LINE PRINTER POSITION
-3962          JMP      DOSIZI>  
+3962          JMP      DOSIZT>  
 3963 TTYIST:  LDA      TTYPOS                   ;GET TELETYPE PRINT POSITION
 3964 
 3965 
@@ -4236,7 +4236,7 @@
 4236 TRMOK:   XTHL     
 4237          DCX      H                        ;LOOK AT TERMINATOR
 4238          CHRGET                            ;AND SET UP CONDITION CODES
-4239          JNZ      LOPOT2                   ;NOT ENDING, CHECK FOR COMMA
+4239          JNZ      LOPDT2                   ;NOT ENDING, CHECK FOR COMMA
 4240 
 4241 
 4242                                            ;AND GET ANOTHER VARIABLE
@@ -4899,7 +4899,7 @@
 4899 
 4900 
 4901                                            ;DOUBLE PRECISION
-4902          LXI      H,DBLOSP                 ;DISPATCH TO A DOUBLE PRECISION ROUTINE
+4902          LXI      H,DBLDSP                 ;DISPATCH TO A DOUBLE PRECISION ROUTINE
 4903 
 4904 
 4905 DODSP:   LDA      OPRTYP                   ;RECALL WHICH OPERAND IT WAS
@@ -4936,7 +4936,7 @@
 4936          CPI      4                        ;SEE IF ITS SINGLE, SO WE KNOW
 4937 
 4938                                            ;HOW TO POP THE VALUE OFF
-4939          JZ       SNGOBL                   ;IT'S SINGLE PRECISION
+4939          JZ       SNGDBL                   ;IT'S SINGLE PRECISION
 4940 
 4941 
 4942                                            ;SO DO A POPR / CALL MOVER
@@ -4944,7 +4944,7 @@
 4944          SHLD     FACLO                    ;SAVE IT FOR CONVERSION
 4945 
 4946 
-4947          JMP      SETOBL                   ;SET IT UP
+4947          JMP      SETDBL                   ;SET IT UP
 4948 
 4949 
 4950 ; 
@@ -5038,7 +5038,7 @@
 5038 IFN      FUNCTS,< 
 5039          CPI      FNTK                     ;USER-DEFINED FUNCTION?
 5040 
-5041          JZ       FNODER>  
+5041          JZ       FNDOER>  
 5042 
 5043 
 5044          SUI      ONEFUN                   ;IS IT A FUNCTION NAME?
@@ -5421,7 +5421,7 @@
 5421          MOV      C,A                      ;[C] LOW ORDER OF ANSWER
 5422          MOV      A,D      
 5423          CMA                               ;COMPLEMENT HIGH ORDER 100
-5424          CALL     GIVACA                   ;FLOAT [A,C] AS RESULT
+5424          CALL     GIVACF                   ;FLOAT [A,C] AS RESULT
 5425          POP      B                        ;TAKE RETURN ADDRESS OF FRMEVL
 5426          JMP      RETAOP>>                 ;OFF AND RETURN TO THE RIGHT
 5427                                            ;PLACE SO THE TEXT POINTER
@@ -5434,7 +5434,7 @@
 5434 
 5435 
 5436                                            ;ENTRY OF 90 ON THE STACK
-5437          CALL     FROINT                   ;COERCE THE ARGUMENT TO INTEGER
+5437          CALL     FRCINT                   ;COERCE THE ARGUMENT TO INTEGER
 5438 
 5439 
 5440          MOV      A,L                      ;COMPLEMENT [H,L]
@@ -5682,7 +5682,7 @@
 5682          LHLD     ARYTAB                   ;PLACE TO STOP SEARCHING
 5683          XCHG     
 5684          LHLD     VARTAB                   ;GET THE PLACE TO START
-5685 LOPEND:  COMPAR                            ;SEE IF WE ARE THERE
+5685 LOPFND:  COMPAR                            ;SEE IF WE ARE THERE
 5686          JZ       NOTENS                   ;COULDN'T FIND THIS VARIABLE
 5687                                            ;SO MAKE ROOM FOR IT
 5688          MOV      A,C      
@@ -5697,7 +5697,7 @@
 5697          INX      H        
 5698          INX      H        
 5699          INX      H        
-5700          JMP      LOPFNO                   ;TRY AGAIN
+5700          JMP      LOPFND                   ;TRY AGAIN
 5701 NOTENS:  PUSH     B                        ;REMEMBER WHAT THIS
 5702                                            ;AVARIABLE LOOKS LIKE
 5703          LXI      B,6+$CODE>               ;THE AMOUNT TO SHOVE
@@ -5791,7 +5791,7 @@
 5791          COMPAR                            ;SEE IF WE ARE THERE
 5792          XCHG                              ;[H,L] GETS SEARCH POINT
 5793          POP      D                        ;POP OFF VARIABLE LOOKS
-5794          JZ       NOTFDO                   ;COULDN'T FIND IT
+5794          JZ       NOTFDD                   ;COULDN'T FIND IT
 5795          PUSHM                             ;PUT ON LOOKS OF VARIABLE
 5796                                            ;WE ARE EXAMINING
 5797          XTHL                              ;PUT [H,L] ON THE STACK AND
@@ -5876,7 +5876,7 @@
 5876          LHLD     DIMFLG   
 5877 
 5878 
-5879          XTHL     STEXT                    ;POINTER BACK INTO [H,L]
+5879          XTHL                              ;TEXT POINTER BACK INTO [H,L]
 5880          MVI      D,0                      ;SET # DIMENSIONS =0
 5881 
 5882 INDLOP:  PUSH     D                        ;SAVE NUMBER OF DIMENSIONS
@@ -5963,7 +5963,7 @@
 5963 
 5964 
 5965          ORA      A                        ;ZERO MEANS NO
-5966          MVI      E,ERRDO                  ;"DOUBLY DIMENSIONED" ERROR
+5966          MVI      E,ERRDD                  ;"DOUBLY DIMENSIONED" ERROR
 5967 
 5968          JNZ      ERROR    
 5969 
@@ -5978,7 +5978,7 @@
 5978          CMP      M                        ;MAKE SURE THE NUMBER GIVEN NOW AND
 5979                                            ;AND WHEN THE ARRAY WAS SET UP ARE THE
 5980                                            ;SAME
-5981          JZ       GETDER                   ;JUMP OFF AND READ
+5981          JZ       GETDEF                   ;JUMP OFF AND READ
 5982 
 5983 
 5984                                            ;THE INDICES ...
@@ -6046,7 +6046,7 @@
 6046                                            ;RETURNS ITS ARGUMENT IN [C]
 6047          MOV      M,B                      ;STORE THE NUMBER OF DIMENSIONS
 6048          INX      H        
-6049 LOPPTA:  LDA      OIMFLG                   ;CALLED BY DIMENSION?
+6049 LOPPTA:  LDA      DIMFLG                   ;CALLED BY DIMENSION?
 6050 
 6051 
 6052          ORA      A        
@@ -6269,7 +6269,7 @@
 6269 SNGFLT:  MOV      L,A                      ;MAKE [A] AN UNSIGNED INTEGER
 6270          XRA      A        
 6271 GIVINT:  MOV      H,A      
-6272          JMP      MAKINI>  
+6272          JMP      MAKINT>  
 6273 
 6274 
 6275 IFN      LENGTH,< 
@@ -6456,7 +6456,7 @@
 6456 ; A STRING WITH THE CHARACTERS THE OUTPUT OF THE NUMBER
 6457 ; WOULD HAVE GIVEN
 6458 ; 
-6459 STRS:    
+6459 STR$:    
 6460 IFN      LENGTH-2,<
 6461          CALL     CHKNUM>                  ;MAKE SURE THE ARGUMENT
 6462                                            ;IS A NUMERIC
@@ -6753,7 +6753,7 @@
 6753          JNZ      SKPVAR                   ;IF NOT, JUST SKIP AROUND IT
 6754 
 6755 
-6756          CALL     OVARS                    ;COLLECT IT
+6756          CALL     DVARS                    ;COLLECT IT
 6757 
 6758 
 6759          XRA      A                        ;AND DON'T SKIP ANYTHING MORE
@@ -6821,8 +6821,8 @@
 6821 
 6822 DVAR2:   PUSH     B                        ;GOES ON STACK
 6823 IFE      LENGTH-2,<
-6824 OVAR:    
-6825 OVARS:   XRA      A        
+6824 DVAR:    
+6825 DVARS:   XRA      A        
 6826          ORA      M                        ;SEE IF ITS THE NULL STRING
 6827          INX      H        
 6828          MOV      E,M      
@@ -6904,7 +6904,7 @@
 6904          MOV      L,C      
 6905          MOV      H,B                      ;[H,L]=NEW POINTER
 6906          DCX      H                        ;FIX UP FRETOP
-6907          JMP      FNOVAR                   ;AND TRY TO FIND HIGH AGAIN
+6907          JMP      FNDVAR                   ;AND TRY TO FIND HIGH AGAIN
 6908 
 6909 
 6910 
@@ -7331,7 +7331,7 @@
 7331 
 7332 
 7333 CONINT:  PUSH     H        
-7334          CALL     PROINT   
+7334          CALL     FRCINT   
 7335 
 7336 
 7337          XCHG     
@@ -7422,7 +7422,7 @@
 7422          XCHG                              ;GET MAX LINE IN [H,L]
 7423          COMPAR                            ;PAST LAST LINE IN RANGE?
 7424          POP      B                        ;TEXT POINTER TO [B,C]
-7425          JC       STPROY                   ;IF PAST, THEN DONE LISTING.
+7425          JC       STPRDY                   ;IF PAST, THEN DONE LISTING.
 7426 
 7427 
 7428          XTHL                              ;SAVE MAX ON BOTTOM OF STACK
@@ -7485,7 +7485,7 @@
 7485 
 7486 RESRCH:  PUSH     D        
 7487          PUSH     PSW                      ;SAVE THE RESERVED WORD NUMBER
-7488 RESCRI:  LDAX     D                        ;GET CHARACTER FROM RESLST
+7488 RESCR1:  LDAX     D                        ;GET CHARACTER FROM RESLST
 7489          INX      D                        ;BUMP RESLST POINTER
 7490          ORA      A                        ;TEST BITS
 7491          JP       RESCR1                   ;NOT AT END OF RESERVED WORD YET
@@ -7609,7 +7609,7 @@
 7609          OUT      10       
 7610          DCR      C                        ;DECREMENT CHARACTER COUNT
 7611          INX      H        
-7612          JNZ      NOTYTO   
+7612          JNZ      NOTYTD   
 7613 ZRLOP:   IN       8        
 7614          ANA      D        
 7615          JZ       ZRLOP    
@@ -7782,7 +7782,7 @@
 7782 
 7783          XTHL>                             ;GET BACK THE TEXT POINTER
 7784 IFN      LENGTH-2,<
-7785 POKE:    CALL     INTI02                   ;READ LOCATION TO POKE
+7785 POKE:    CALL     INTID2                   ;READ LOCATION TO POKE
 7786          PUSH     D>                       ;SAVE THE LOCATION
 7787          SYNCHK   44                       ;CHECK FOR A COMMA
 7788 

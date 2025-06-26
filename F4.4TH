@@ -103,7 +103,7 @@
  103 INTERNAL ISUB,IMULT,IDIV,ICOMP,INEG,DADD,DSUB,DMULT,DDIV,DCOMP,INTFNC>
  104 
  105 
- 106 EXTERNAL MINUTK,PLUSTK,DVDERR,ERROV,FCERR,SIGN
+ 106 EXTERNAL MINUTK,PLUSTK,DV0ERR,ERROV,FCERR,SIGN
  107 EXTERNAL $CODE    
  108 IFE      LENGTH-2,<
  109 EXTERNAL DFACLO,ARG,ARGLO,VALTYP,TMERR,TEMP2,TEMP3>
@@ -216,7 +216,7 @@
  216 
  217 
  218          ORA      A                        ;SEE IF THE NUMBER IS ZERO
- 219          JZ       MOVER                    ;IT IS, ANSWER IS IN REGISTERS
+ 219          JZ       MOVFR                    ;IT IS, ANSWER IS IN REGISTERS
  220 
  221 
  222 
@@ -234,7 +234,7 @@
  234 
  235 
  236          XCHG                              ;GET (DE) BACK WHERE IT BELONGS
- 237          CALL     MOVER                    ;PUT REGISTERS IN THE FAC
+ 237          CALL     MOVFR                    ;PUT REGISTERS IN THE FAC
  238 
  239 
  240          POPR                              ;GET THE OLD FAC IN THE REGISTERS
@@ -425,7 +425,7 @@
  425 
  426          XRA      C                        ;PACK SIGN AND HO
  427          MOV      C,A                      ;SAVE IT IN C
- 428          JMP      MOVER                    ;SAVE NUMBER IN FAC
+ 428          JMP      MOVFR                    ;SAVE NUMBER IN FAC
  429 
  430 
  431 
@@ -811,7 +811,7 @@
  811                                            ;DIVISION FAC:=ARG/FAC
  812                                            ;ALTERS A,B,C,D,E,M,L
  813 FDIV:    FSIGN                             ;CHECK FOR DIVISION BY ZERO
- 814          JZ       DVDERR                   ;HE IS TRYING TO GET AWAY WITH IT
+ 814          JZ       DV0ERR                   ;HE IS TRYING TO GET AWAY WITH IT
  815 
  816 
  817          MVI      L,377                    ;SUBTRACT THE TWO EXPONENTS, L IS A FLAG
@@ -825,7 +825,7 @@
  825                                            ;IN THE REGISTERS QUICKLY.
  826          DCX      H                        ;POINT TO HO
  827          MOV      A,M                      ;GET HO
- 828          STA      FOIVA+1                  ;SAVE IT
+ 828          STA      FDIVA+1                  ;SAVE IT
  829 
  830 
  831          DCX      H                        ;SAVE MIDDLE ORDER
@@ -870,7 +870,7 @@
  870          STA      FDIVG+1  
  871 
  872 
- 873 FDIVI:   PUSH     H                        ;SAVE LO'S OF NUMBER
+ 873 FDIV1:   PUSH     H                        ;SAVE LO'S OF NUMBER
  874          PUSH     B                        ;SAVE HO OF NUMBER
  875          MOV      A,L                      ;SUBTRACT NUMBER THAT WAS IN FAC
  876 FDIVC:   SUI      0                        ;SUBTRACT LO
@@ -944,7 +944,7 @@
  944 
  945          DCR      M                        ;DECREMENT EXPONENT
  946          POP      H                        ;GET NUMBER BACK
- 947          JNZ      FDIVI                    ;DIVIDE MORE IF NO OVERFLOW OCCURED
+ 947          JNZ      FDIV1                    ;DIVIDE MORE IF NO OVERFLOW OCCURED
  948 
  949 
  950          JMP      OVERR                    ;OVERFLOW!!
@@ -1187,12 +1187,12 @@
 1187 MOVFM:   CALL     MOVRM                    ;GET NUMBER IN REGISTERS
 1188 
 1189 
-1190                                            ;FALL INTO MOVER AND PUT IT IN FAC
+1190                                            ;FALL INTO MOVFR AND PUT IT IN FAC
 1191 
 1192 
 1193 ; MOVE REGISTERS (B,C,D,E) TO FAC
 1194 ; ALTERS D,E
-1195 MOVER:   XCHG                              ;GET LO'S IN (HL)
+1195 MOVFR:   XCHG                              ;GET LO'S IN (HL)
 1196          SHLD     FACLO                    ;PUT THEM WHERE THEY BELONG
 1197 
 1198 
@@ -1478,7 +1478,7 @@
 1478 
 1479 ; CONVERT DOUBLE PRECISION NUMBER TO A SINGLE PRECISON ONE
 1480 ; ALTERS A,B,C,D,E,H,L
-1481 CONSO:   CALL     MOVRF                    ;GET THE HO'S IN THE REGISTERS
+1481 CONSD:   CALL     MOVRF                    ;GET THE HO'S IN THE REGISTERS
 1482          MVI      A,4                      ;SET VALTYP TO "SINGLE PRECISON"
 1483          STA      VALTYP   
 1484          MOV      A,B                      ;CHECK IF THE NUMBER IS ZERO
@@ -1639,7 +1639,7 @@
 1639 DINT:    LXI      H,FAC                    ;GET POINTER TO FAC
 1640          MOV      A,M                      ;GET EXPONENT
 1641          CPI      220                      ;CAN WE CONVERT IT TO AN INTEGER?
-1642          JC       FROINT                   ;THEN DO SO
+1642          JC       FRCINT                   ;THEN DO SO
 1643          JNZ      DINT2                    ;CHECK FOR -32768
 1644          MOV      C,A                      ;SAVE EXPONENT IN C
 1645          DCX      H                        ;GET POINTER TO SIGN AND HO
@@ -1674,7 +1674,7 @@
 1674          STA      DFACLO-1                 ;WE NORMALIZE, WE WILL SHIFT IN ZEROS
 1675          POP      PSW                      ;IF WE WERE CALLED FROM FOUT, DON'T NORMALIZE,
 1676          RNC                               ;JUST RETURN
-1677          JMP      ONORML                   ;RE-FLOAT THE INTEGER
+1677          JMP      DNORML                   ;RE-FLOAT THE INTEGER
 1678 
 1679 DINTA:   LXI      H,DFACLO                 ;SUBTRACT ONE FROM FAC, GET POINTER TO LO
 1680 DINTAI:  MOV      A,M                      ;GET A BYTE OF FAC
@@ -1835,7 +1835,7 @@
 1835 ; ALTERS A,B,C,D,E,H,L
 1836 IDIV:    MOV      A,H                      ;CHECK FOR DIVISION BY ZERO
 1837          ORA      L        
-1838          JZ       DVDERR                   ;WE HAVE DIVISION BY ZERO11
+1838          JZ       DV0ERR                   ;WE HAVE DIVISION BY ZERO11
 1839          CALL     IMULDV                   ;FIX UP THE SIGNS
 1840          PUSH     B                        ;SAVE THE SIGN OF THE RESULT
 1841          XCHG                              ;GET DENOMINATOR IN (HL)
@@ -1878,7 +1878,7 @@
 1878 
 1879 ; GET READY TO MULTIPLY OR DIVIDE
 1880 ; ALTERS A,B,C,D,E,H,L
-1881 IMULOV:  MOV      A,H                      ;GET SIGN OF RESULT
+1881 IMULDV:  MOV      A,H                      ;GET SIGN OF RESULT
 1882          XRA      D        
 1883          MOV      B,A                      ;SAVE IT IN B
 1884          CALL     INEGH                    ;NEGATE SECOND ARGUMENT IF NECESARY
@@ -2063,8 +2063,8 @@
 2063 ; ROUND FAC
 2064 ; ALTERS A,B,H,L
 2065 DROUND:  LDA      DFACLO-1                 ;GET EXTRA BYTE TO SEE IF WE HAVE TO ROUND
-2066 DROUND:  ORA      A                        ;ENTRY FROM DDIV
-2067          CM       OROUNA                   ;ROUND UP IF NECESSARY
+2066 DROUNB:  ORA      A                        ;ENTRY FROM DDIV
+2067          CM       DROUNA                   ;ROUND UP IF NECESSARY
 2068          LXI      H,FAC+1                  ;GET POINTER TO UNPACKED SIGN
 2069          MOV      A,M                      ;GET SIGN
 2070          ANI      200                      ;ISOLATE SIGN BIT
@@ -2661,7 +2661,7 @@
 2661          POP      PSW                      ;GET THE NEXT DIGIT
 2662          CALL     FLOAT                    ;CONVERT THE DIGIT TO SINGLE PRECISION
 2663          CALL     CONDS                    ;NOW, CONVERT THE DIGIT TO DOUBLE PRECISION
-2664          CALL     DADO                     ;ADD IN THE DIGIT
+2664          CALL     DADD                     ;ADD IN THE DIGIT
 2665          JMP      FINDGE                   ;GET THE FLAGS OFF THE STACK AND WE ARE DONE
 2666 
 2667 IFN      EXTENC,< 
@@ -2678,7 +2678,7 @@
 2678 
 2679 IFE      LENGTH-2,<
 2680          POPR                              ;GET PREVIOUS NUMBER OFF STACK
-2681          JMP      FAOD>>                   ;ADD IT IN
+2681          JMP      FADD>>                   ;ADD IT IN
 2682 
 2683 ; HERE WE PACK IN THE NEXT DIGIT OF THE EXPONENT
 2684 ; WE MUTIPLY THE OLD EXPONENT BY TEN AND ADD IN THE NEXT DIGIT
@@ -2716,13 +2716,13 @@
 2716          XRA      A        
 2717          MVI      B,230    
 2718 
-2719          CALL     FLOATRO                  ;CONVERT TO FLOATING POINT
+2719          CALL     FLOATR                   ;CONVERT TO FLOATING POINT
 2720 
 2721 
 2722 IFE      LENGTH-2,<
 2723          CALL     CONISS                   ;PUT THE LINE NUMBER IN THE FAC AS AN INTEGER
 2724          XRA      A                        ;SET FORMAT TO FREE FORMAT
-2725          CALL     FOUINIO                  ;SET UP THE SIGN
+2725          CALL     FOUINI                   ;SET UP THE SIGN
 2726          LXI      H,STROUI##               ;PUT PRINT STRING ADDRESS ON STACK SO WE WILL
 2727 
 2728 
@@ -2770,7 +2770,7 @@
 2770 ; THIS ALGORITHM IS USED FOR SPEED.
 2771          XRA      A                        ;PUT TEN'S EXPONENT COUNT ON STACK
 2772          PUSH     PSW      
-2773          CALL     FOUTCH                   ;SEE IF NUMBER IS TOO BIG OR TOO SMALL
+2773          CALL     FOUTCB                   ;SEE IF NUMBER IS TOO BIG OR TOO SMALL
 2774 
 2775 
 2776 FOUT3:   MOVRI    221,103,117,370          ;IS NUMBER .LE. 99999.94997 IT IS TOO SMALL
@@ -2816,7 +2816,7 @@
 2816          CALL     QINT                     ;GET INTEGER PART IN C,D,E
 2817 
 2818 
-2819          CALL     MOVER                    ;SAVE NUMBER IN FAC
+2819          CALL     MOVFR                    ;SAVE NUMBER IN FAC
 2820 
 2821 
 2822 ; DECIDE IF THE NUMBER SHOULD BE PRINTED IN FIXED OR FLOATING NOTATION
@@ -2883,7 +2883,7 @@
 2883 
 2884 
 2885          INX      H                        ;INCREMENT POINTER TO NEXT POWER OF TEN
-2886          CALL     MOVER                    ;SAVE C,D,E IN FAC
+2886          CALL     MOVFR                    ;SAVE C,D,E IN FAC
 2887 
 2888 
 2889          XCHG                              ;GET POWER OF TEN POINTER IN (DE)
@@ -2953,7 +2953,7 @@
 2953          RET                               ;ALL DONE
 2954 
 2955 ; SEE IF FAC .LE. 999999.499
-2956 FOUTCH:  MOVRI    224,164,043,367          ;COMPARE NUMBER WITH CONSTANT
+2956 FOUTCB:  MOVRI    224,164,043,367          ;COMPARE NUMBER WITH CONSTANT
 2957 
 2958 
 2959 
@@ -3324,7 +3324,7 @@
 3324          JC       FFXFLV                   ;PRINT THE NUMBER IN E-NOTATION
 3325          JZ       FFXSFX                   ;WE HAVE A SNG
 3326 ; HERE TO PRINT A DBL IN FIXED FORMAT--FIXED POINT NOTATION
-3327          LXI      D,FFXOXM                 ;GET POINTER TO 1D16
+3327          LXI      D,FFXDXM                 ;GET POINTER TO 1D16
 3328          CALL     DCOMPD                   ;WE CAN'T PRINT A NUMBER .GE. 10^16 IN FIXED
 3329                                            ;POINT NOTATION
 3330          LXI      D,16*400+$CODE           ;SET D = NUMBER OF DIGITS TO PRINT FOR A DBL
@@ -3575,7 +3575,7 @@
 3575          LXI      H,FBUFFR                 ;SAVE A
 3576          CALL     MOVMF    
 3577          MVI      A,4                      ;SET ITERATION COUNT
-3578          SQR11    PUSH     PSW             ;SAVE COUNT
+3578 SQR1:    PUSH     PSW                      ;SAVE COUNT
 3579          CALL     PUSHF                    ;SAVE X(N)
 3580          LXI      H,FBUFFR                 ;COMPUTE A/X(N)
 3581          CALL     MOVRM                    ;GET A IN THE REGISTERS
@@ -3612,7 +3612,7 @@
 3612          LXI      H,FHALF                  ;GET 1/2
 3613 
 3614 
-3615          CALL     MOVEM                    ;SQR(X)=X^.5
+3615          CALL     MOVFM                    ;SQR(X)=X^.5
 3616 
 3617 
 3618 FPWRT:   POPR                              ;GET ARG IN REGISTERS, ENTRY TO FPWR IF
@@ -3980,7 +3980,7 @@
 3980 
 3981 
 3982 
-3983          CALL     MOVER                    ;BETWEEN 0 AND 1
+3983          CALL     MOVFR                    ;BETWEEN 0 AND 1
 3984 
 3985 
 3986          POPR     
@@ -4049,7 +4049,7 @@
 4049          CALL     FMULT    
 4050          CALL     PUSHF                    ;SAVE X-2
 4051          LXI      H,SINCON 
-4052          CALL     MOVEM                    ;MOVE FIRST CONSTANT INTO FAC
+4052          CALL     MOVFM                    ;MOVE FIRST CONSTANT INTO FAC
 4053          POPR                              ;GET X*2
 4054          MVI      A,4                      ;GET DEGREE
 4055 POLY1:   PUSH     PSW                      ;SAVE DEGREE
@@ -4065,7 +4065,7 @@
 4065          POP      PSW                      ;GET DEGREE
 4066          DCR      A                        ;SEE IF DONE
 4067          JNZ      POLY1                    ;NO, DO NEXT TERM
-4068          JMP      FMULTI>                  ;MULTIPLY BY X AND WE ARE DONE
+4068          JMP      FMULTT>                  ;MULTIPLY BY X AND WE ARE DONE
 4069 IFN      EXTENC,< 
 4070          LXI      H,SINCON                 ;CALCULATE THE SIN BY EVALUATING
 4071 
@@ -4123,7 +4123,7 @@
 4123 
 4124 
 4125          XCMG                              ;GET LO'S WHERE THEY BELONG
-4126          CALL     MOVER    
+4126          CALL     MOVFR    
 4127 
 4128 
 4129          CALL     COS      
@@ -4170,7 +4170,7 @@
 4170          CALL     POLYX    
 4171 
 4172 
-4173          LXI      H,P12                    ;GET POINTER TO PI/2 IN CASE WE HAVE TO
+4173          LXI      H,PI2                    ;GET POINTER TO PI/2 IN CASE WE HAVE TO
 4174 
 4175 
 4176          RET                               ;SUBTRACT THE RESULT FROM PI/2
@@ -4385,7 +4385,7 @@
 4385 IFE      REALIO,< 
 4386          LXI      H,$CODE+16190>
 4387          PUSH     H                        ;ALSO SAVE FOR LATER
-4388 TTYW:    LXI      H,TTYWIO 
+4388 TTYW:    LXI      H,TTYWID 
 4389 
 4390 
 4391          CALL     STROUT   
@@ -4532,7 +4532,7 @@
 4532 
 4533          CPI      "A"                      ;DELETE ATN BUT NOT SIN, COST
 4534 
-4535          JZ       HAVENS                   ;TEST
+4535          JZ       HAVFNS                   ;TEST
 4536 
 4537 
 4538          SHLD     COSFIX## 
@@ -4547,7 +4547,7 @@
 4547          LXI      D,COS>   
 4548 
 4549 
-4550 HAVENS:                                    ;TEXT ALWAYS PRECEDED BY ZERO
+4550 HAVFNS:                                    ;TEXT ALWAYS PRECEDED BY ZERO
 4551          XCHG                              ;PUT BOTTOM OF MEMORY IN (H,L)
 4552          MVI      M,0                      ;STORE IT
 4553 
