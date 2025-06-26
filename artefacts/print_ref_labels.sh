@@ -1,5 +1,21 @@
 #!/usr/bin/awk -f
 
+# prints references on stdout
+# prints declarations on stderr
+#
+# usage cues:
+#   $0 F[34].4TH > ... 2> ...
+#   sed -e 's,>,,g' -e 's,:,,g' | sort -u <file with stdout from $0) > ...
+#   sed -e 's,>,,g' -e 's,#,,g' | sort -u <file with stderr from $0) > ...
+#   manual processing of resulting files ...
+#   sort -u processed files into single files containing all decs and refs
+#   compile lists with defs not in refs and vice versa
+#   for lab in $(cat <refs file>) ; do grep -qs $lab <defs file> || echo $lab ; done > <not declared file>
+#   for lab in $(cat <defs file>) ; do grep -qs $lab <refs file> || echo $lab ; done > <not referenced file>
+#   grep unknown refs and defs from resulting files in *.4TH and manually check/ update *.3RD accordingly
+#   for lab in $(cat <not declared file>) ; do echo "*** $lab" ; grep $lab *.4TH ; echo ; echo ; echo ; done > ...
+#   for lab in $(cat <not referenced file>) ; do echo "*** $lab" ; grep $lab *.4TH ; echo ; echo ; echo ; done > ...
+
 BEGIN {
   comment = ""
 }
