@@ -17,7 +17,7 @@
   17          CONTRW==0>
   18 
   19 IFE      LENGTH,< 
-  20          EXTENC==0                         ;ON MEANS EXTENDED FUNCTIONS
+  20          EXTFNC==0                         ;ON MEANS EXTENDED FUNCTIONS
   21          MULDIM==0                         ;ON MEANS MULTIPLE DIMENSIONED ARRAYS ALLOWED
   22          STRING==0                         ;ON MEANS STRINGS ALLOWED
   23          CASSW==0 
@@ -27,12 +27,12 @@
   27          CONTRW==0>
   28 
   29 IFE      LENGTH-1,<
-  30          EXTENC==1
+  30          EXTFNC==1
   31          MULDIM==1
   32          STRING==1>
   33 
   34 IFE      LENGTH-2,<
-  35          EXTENC==1
+  35          EXTFNC==1
   36          MULDIM==1
   37          STRING==1>
   38 
@@ -88,7 +88,7 @@
   88 INTERNAL ZERO,FLOAT,FLOATR,MOVE,FADD,FADDS,FSUB,FMULT,FDIV,FIN,FOUT
   89 INTERNAL PUSHF,ABS,INT,QINT,SGN,SQR,RND,SIN,FCOMP,SIGNC,OVERR
   90 INTERNAL INPRT,LINPRT,MOVFM,MOVMF,MOVFR,MOVRF,MOVRM,NEG,INRART,INXHRT
-  91 IFN      EXTENC,< 
+  91 IFN      EXTFNC,< 
   92 INTERNAL FPWR,EXP,LOG,COS,TAN,ATN,FONE>
   93 IFN      MULDIM&<LENGTH-2>,<
   94 INTERNAL DMULT>   
@@ -188,7 +188,7 @@
  188 
  189 
  190                                            ;SUBTRACTION FAC:=ARG-FAC
- 191 IFN      EXTENC,< 
+ 191 IFN      EXTFNC,< 
  192 FSUBS:   CALL     MOVRM>                   ;ENTRY IF POINTER TO ARG IS IN (HL)
  193 
  194 
@@ -577,7 +577,7 @@
  577          RET>                              ;ALL DONE
  578 PAGE     
  579 SUBTTL   NATURAL LOG FUNCTION
- 580 IFN      EXTENC,< 
+ 580 IFN      EXTFNC,< 
  581 ; CALCULATION IS BY:
  582 ;   LN(F*2*N)=(N+LOG2(F))*LN(2)
  583 ; AN APPROXIMATION POLYNOMIAL IS USED TO CALCULATE LOG2(F)
@@ -667,7 +667,7 @@
  667 SUBTTL   FLOATING MULTIPLICATION AND DIVISION
  668                                            ;MULTIPLICATION FAC:=ARG*FAC
  669                                            ;ALTERS A,B,C,D,E,H,L
- 670 IFE      EXTENC,< 
+ 670 IFE      EXTFNC,< 
  671 FMULTS:  CALL     MOVRM>                   ;ENTRY WITH POINTER TO ARG IN (HL)
  672 IFN      LENGTH-2,<
  673          XWD      1000,041                 ;"LXI H" AROUND NEXT 2 BYTES
@@ -993,7 +993,7 @@
  993          MOV      M,A                      ;SAVE THE NEW SIGN
  994          DCX      H                        ;POINT TO EXPONENT
  995          RET                               ;ALL DONE, LEAVE HO IN A
- 996 IFN      EXTENC,< 
+ 996 IFN      EXTFNC,< 
  997 MLDVEX:  FSIGN                             ;ENTRY FROM EXP, PICK UNDERFLOW IF NEGATIVE
  998          CMA                               ;PICK OVERFLOW IF POSITIVE
  999          POP      H>                       ;DON'T SCREW UP STACK
@@ -1135,7 +1135,7 @@
 1135 ; ALTERS A,B,C,D,E,H,L
 1136 VNEG:    LDA      VALTYP                   ;SEE WHAT KIND OF NUMBER WE HAVE
 1137          CPI      2        
-1138          J2       INEG                     ;WE HAVE AN INTEGER, NEGATE IT THAT WAY
+1138          JZ       INEG                     ;WE HAVE AN INTEGER, NEGATE IT THAT WAY
 1139          JM       TMERR                    ;BLOW UP ON STRINGS
 1140          JMP      NEG                      ;NEGATE SNG AND DBL THE SAME
 1141 
@@ -1605,12 +1605,12 @@
 1605          MOV      A,M      
 1606          CPI      230                      ;SEE IF NUMBER HAS ANY FRACTIONAL BITS
 1607 
-1608 IFN      EXTENC,<                          ;THE ONLY GUY WHO NEEDS THIS DOESN'T CARE
+1608 IFN      EXTFNC,<                          ;THE ONLY GUY WHO NEEDS THIS DOESN'T CARE
 1609          LDA      FACLO>                   ;ABOUT THE SIGN
 1610 
 1611 
 1612          RNC                               ;IT DOES NOT
-1613 IFN      EXTENC,< 
+1613 IFN      EXTFNC,< 
 1614          MOV      A,M>                     ;GET EXPONENT BACK
 1615          CALL     QINT                     ;IT DOES, SHIFT THEM OUT
 1616 
@@ -1618,14 +1618,14 @@
 1618          MVI      M,230                    ;CHANGE EXPONENT SO IT WILL BE CORRECT
 1619 
 1620                                            ;AFTER NORMALIZATION
-1621 IFN      EXTENC,< 
+1621 IFN      EXTFNC,< 
 1622          MOV      A,E                      ;GET LO
 1623          PUSH     PSW>                     ;SAVE IT
 1624          MOV      A,C                      ;NEGATE NUMBER IF IT IS NEGATIVE
 1625          RAL                               ;PUT SIGN IN CARRY
-1626 IFE      EXTENC,< 
+1626 IFE      EXTFNC,< 
 1627          JMP      FADFLT>                  ;REFLOAT NUMBER
-1628 IFN      EXTENC,< 
+1628 IFN      EXTFNC,< 
 1629          CALL     FADFLT                   ;REFLOAT NUMBER
 1630 
 1631 
@@ -2589,12 +2589,12 @@
 2589          POP      PSW                      ;GET NEXT DIGIT
 2590          SUI      "0"                      ;SUBTRACT OFF ASCII CODE
 2591 
-2592 IFE      EXTENC,< 
+2592 IFE      EXTFNC,< 
 2593          CALL     PUSHF                    ;PUT NUMBER ON STACK
 2594          CALL     FLOAT                    ;CONVERT TO FLOATING POINT NUMBER
 2595          POPR     
 2596          CALL     FADD>                    ;ADD IN NEXT DIGIT
-2597 IFN      EXTENC,< 
+2597 IFN      EXTFNC,< 
 2598          CALL     FINLOG>  
 2599 
 2600 
@@ -2664,7 +2664,7 @@
 2664          CALL     DADD                     ;ADD IN THE DIGIT
 2665          JMP      FINDGE                   ;GET THE FLAGS OFF THE STACK AND WE ARE DONE
 2666 
-2667 IFN      EXTENC,< 
+2667 IFN      EXTFNC,< 
 2668 ; SUBROUTINE FOR FIN, LOG
 2669 FINLOG:  CALL     PUSHF                    ;SAVE FAC ON STACK
 2670 
@@ -2914,7 +2914,7 @@
 2914 
 2915 
 2916 FOUT12:  POP      PSW                      ;GET DECIMAL EXPONENT
-2917          J2       FOUT17                   ;RETURN IF NUMBER WAS IN FIXED POINT FORMAT
+2917          JZ       FOUT17                   ;RETURN IF NUMBER WAS IN FIXED POINT FORMAT
 2918 
 2919 
 2920 ; FLOATING POINT NOTATION -- PUT AN "E" IN THE BUFFER
@@ -3369,7 +3369,7 @@
 3369 FFXXV1:  SUI      3                        ;REDUCE A MOD 3
 3370          JNC      FFXXV1   
 3371          ADI      5                        ;ADD 3 BACK AND ADD IN 2 MORE FOR SCALING
-3372          CALL     FOUTCO                   ;CHECK IF WE HAVE TO USE COMMAS AT ALL
+3372          CALL     FOUTCC                   ;CHECK IF WE HAVE TO USE COMMAS AT ALL
 3373          MOV      A,E                      ;SETUP THE DECIMAL POINT COUNT
 3374          ADD      D        
 3375          INR      A        
@@ -3420,7 +3420,7 @@
 3420 ; HERE TO PRINT A NUMBER .LT. .1
 3421 FFXXV3:  CALL     FOTZER                   ;PUT ALL ZEROS BEFORE THE DECIMAL POINT
 3422          MOV      A,C                      ;SAVE C
-3423          CALL     FOUTOP                   ;PUT IN A DECIMAL POINT
+3423          CALL     FOUTDP                   ;PUT IN A DECIMAL POINT
 3424          MOV      C,A                      ;RESTORE C
 3425          POP      PSW                      ;GET THE NUMBER WE SAVED
 3426          JM       FFXXV4                   ;DECIDE HOW MANY ZEROS TO PRINT BETWEEN THE
@@ -3522,7 +3522,7 @@
 3522 FOUTNV:  PUSH     D                        ;SAVE (DE)
 3523          LDA      VALTYP                   ;GET WHAT KIND OF VALUE WE HAVE
 3524          CPI      4        
-3525          JNZ      FOUTNO                   ;WE HAVE A DBL
+3525          JNZ      FOUTND                   ;WE HAVE A DBL
 3526 ; NORMALIZE A SNG
 3527          XRA                               ;ZERO THE EXPONENT
 3528          PUSH     PSW                      ;SAVE IT
@@ -3551,7 +3551,7 @@
 3551          >        
 3552 PAGE     
 3553 SUBTTL   EXPONENTIATION AND THE SQUARE ROOT FUNCTION
-3554 IFE      EXTENC,< 
+3554 IFE      EXTFNC,< 
 3555 ; SQUARE ROOT FUNCTION X=SQR(A)
 3556 ; WE FIRST SCALE THE ARGUMENT TO BETWEEN 5 AND 2 BY LOOKING AT THE
 3557 ; EXPONENT AND USING SQR(M*2*(2*N))=2^N*SQR(M) THEN NEWTON'S METHOD
@@ -3595,7 +3595,7 @@
 3595          RET>                              ;ALL DONE
 3596 
 3597 
-3598 IFN      EXTENC,< 
+3598 IFN      EXTFNC,< 
 3599 ; SUBROUTINE FOR FPWR, ATN
 3600 PSHNEG:  LXI      H,NEG                    ;GET THE ADDRESS OF NEG
 3601 
@@ -3691,7 +3691,7 @@
 3691 ; JMP EXP
 3692 PAGE     
 3693 SUBTTL   EXPONENTIAL FUNCTON
-3694 IFN      EXTENC,< 
+3694 IFN      EXTFNC,< 
 3695 ; WE FIRST SAVE THE ORIGINAL ARGUMENT AND MULTIPLY THE FAC BY LOG2(E)
 3696 ; THE RESULT IS USED TO DETERMINE IF WE WILL GET OVERFLOW SINCE
 3697 ; EXP(X)=2^(X*LOG2(E)) WHERE LOG2(E)=LOG(E) BASE 2. THEN WE SAVE THE
@@ -3802,7 +3802,7 @@
 3802          201>     
 3803 PAGE     
 3804 SUBTTL   POLYNOMIAL EVALUATOR AND THE RANDOM NUMBER GENERATOR
-3805 IFN      EXTENC,< 
+3805 IFN      EXTFNC,< 
 3806 ; EVALUATE P(X^2)*X
 3807 ; POINTER TO DEGREE+1 IS IN (HL)
 3808 ; THE CONSTANTS FOLLOW THE DEGREE
@@ -3901,9 +3901,9 @@
 3901 
 3902 
 3903          RZ                                ;RETURN LAST NUMBER GENERATED IF ZERO
-3904 IFE      EXTENC,< 
+3904 IFE      EXTFNC,< 
 3905          CALL     FMULTS>                  ;MULTIPLY BY CONSTANT A
-3906 IFN      EXTENC,< 
+3906 IFN      EXTFNC,< 
 3907          CALL     MOVRM    
 3908 
 3909 
@@ -3952,7 +3952,7 @@
 3952          230      
 3953 PAGE     
 3954 SUBTTL   SINE, COSINE AND TANGENT FUNCTIONS
-3955 IFN      EXTENC,< 
+3955 IFN      EXTFNC,< 
 3956 ; COSINE FUNCTION
 3957 ; IDEA: USE COS(X)=SIN(X+PI/2)
 3958 COS:     LXI      H,PI2                    ;ADD PI/2 TO FAC
@@ -3999,12 +3999,12 @@
 3999          CALL     FSUB     
 4000 
 4001 
-4002 IFE      EXTENC,< 
+4002 IFE      EXTFNC,< 
 4003          LXI      B,177*400+$CODE          ;GET 1/4
 4004          MOV      D,C      
 4005          MOV      E,C      
 4006          CALL     FSUB>    
-4007 IFN      EXTENC,< 
+4007 IFN      EXTFNC,< 
 4008          LXI      H,FR4                    ;SEE WHAT QUADRANT WE ARE IN
 4009 
 4010 
@@ -4025,12 +4025,12 @@
 4025          CP       NEG                      ;NEGATE IF IN QUADRANTS I, II OR III
 4026 
 4027 
-4028 IFE      EXTENC,< 
+4028 IFE      EXTFNC,< 
 4029          LXI      B,177*400+$CODE          ;GET 1/4
 4030          MOV      D,C      
 4031          MOV      E,C      
 4032          CALL     FADD>    
-4033 IFN      EXTENC,< 
+4033 IFN      EXTFNC,< 
 4034          LXI      H,FR4                    ;ADD 1/4, IN QUADRANTS II, III
 4035 
 4036 
@@ -4043,7 +4043,7 @@
 4043          CNC      NEG                      ;NEGATE IF IN QUADRANTS II, III OR IV
 4044 
 4045 
-4046 IFE      EXTENC,<                          ;EVALUATE APPROXIMATION POLYNOMIAL
+4046 IFE      EXTFNC,<                          ;EVALUATE APPROXIMATION POLYNOMIAL
 4047          CALL     PUSHF                    ;SAVE X
 4048          CALL     MOVRF                    ;SQUARE X
 4049          CALL     FMULT    
@@ -4066,7 +4066,7 @@
 4066          DCR      A                        ;SEE IF DONE
 4067          JNZ      POLY1                    ;NO, DO NEXT TERM
 4068          JMP      FMULTT>                  ;MULTIPLY BY X AND WE ARE DONE
-4069 IFN      EXTENC,< 
+4069 IFN      EXTFNC,< 
 4070          LXI      H,SINCON                 ;CALCULATE THE SIN BY EVALUATING
 4071 
 4072 
@@ -4074,7 +4074,7 @@
 4074 
 4075 
 4076 ; CONSTANTS FOR SIN, COS
-4077 IFN      EXTENC,< 
+4077 IFN      EXTFNC,< 
 4078 PI2:     333                               ;PI/2
 4079          017      
 4080          111      
@@ -4084,7 +4084,7 @@
 4084          000      
 4085          177>     
 4086 SINCON:  
-4087 IFN      EXTENC,  
+4087 IFN      EXTFNC,  
 4088          5>                                ;DEGREE
 4089          272                               ;39.701067
 4090          327      
@@ -4108,7 +4108,7 @@
 4108          203      
 4109 
 4110 
-4111 IFN      EXTENC,  
+4111 IFN      EXTFNC,  
 4112 ; TANGENT FUNCTION
 4113 ; TAN(X)=SIN(X)/COS(X)
 4114 TAN:     CALL     PUSHF                    ;SAVE ARG
@@ -4134,7 +4134,7 @@
 4134 
 4135 PAGE     
 4136 SUBTTL   ARCTANGENT FUNCTION
-4137 IFN      EXTENC,< 
+4137 IFN      EXTFNC,< 
 4138 ; IDEA: USE IDENTITIES TO GET ARG BETWEEN 0 AND 1 AND THEN USE AN
 4139 ; APPROXIMATION POLYNOMIAL TO COMPUTE ARCTAN(X)
 4140 ATN:     FSIGN                             ;SEE IF ARG IS NEGATIVE
@@ -4458,7 +4458,7 @@
 4458 
 4459          DCX      H                        ;ONE LOWER IS STKTOP
 4460          PUSH     H>                       ;SAVE IT ON STACK
-4461 IFE      EXTENC,< 
+4461 IFE      EXTFNC,< 
 4462 
 4463 ; FUNCTION DELETION ROUTINE FOR 4K MACHINE
 4464 ; TO ADD A NEW FUNCTION JUST UPDATE TBLDO
@@ -4492,7 +4492,7 @@
 4492          MOV      M,D      
 4493          POP      H                        ;GET TBLDO POINTER
 4494          JMP      LOPASK>                  ;GQ ASK AGAIN FOR ANOTHER FUNCTION
-4495 IFN      EXTENC,< 
+4495 IFN      EXTFNC,< 
 4496 ASKAGN:  LXI      H,FNS                    ;ASK IF WANTS SIN, COS, ATN.
 4497 
 4498 
@@ -4619,7 +4619,7 @@
 4619 
 4620          PCHL     
 4621 
-4622 IFE      EXTENC,< 
+4622 IFE      EXTFNC,< 
 4623 TBLDO:   ADR(INITSA)
 4624          ADR(FNS) 
 4625          ADR(SINFIX)
@@ -4637,7 +4637,7 @@
 4637          0        
 4638 FNS3:    DC"WANT SQR"
 4639          0>       
-4640 IFN      EXTENC,< 
+4640 IFN      EXTFNC,< 
 4641 FNS:     DC"WANT SIN-COS-TAN-ATN"
 4642 
 4643 

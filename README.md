@@ -43,6 +43,7 @@ A transcript of the PDF containing the [Altair 8800 BASIC source code](https://i
 |`F[34].2ND`|Intermediate files with processing result of step 2.|
 |`F[34].3RD`|Intermediate files with processing result of step 3.|
 |`F[34].4TH`|Processing result of step 4. The actual transcripts of F3 and F4.|
+|`*.grep`|Missing label definitions and references (candidates).|
 
 ### Notes on PDF
 The PDF starts with the BASIC code followed by the math package. Banner pages F3 and F4 prepend each part. F4 banner is followed by a page of handwritten notes, followed by a duplicate of the last page with the symbol references from F3.

@@ -1,0 +1,236 @@
+*** $CODE
+F3.4TH: 875          JMP      $CODE+59                 ;IN 8K ALLOW USER TO HAVE RST 7
+F3.4TH:1735 FNDFOR:  LXI      H,4+$CODE                ;IGNORING EVERYONES "NEWSTT"
+F3.4TH:1764 POPGOF:  LXI      B,$CODE+13               ;TO WIPE OUT A FOR ENTRY
+F3.4TH:1848          LXI      H,$CODE+65536-2*NUMLEV   ;SETUP OFFSET OF GUARANTEED
+F3.4TH:1947          LXI      H,$CODE+65535
+F3.4TH:2098 SCNLIN:  LXI      D,$CODE                  ;ASSUME START LIST AT ZERO
+F3.4TH:2115 ALLLST:  LXI      D,$CODE+^D65529          ;ASSUME MAX END OF RANGE
+F3.4TH:2249          LXI      H,$CODE                  ;PUT ZERO (NON NEXT, FOR, GOSUB TOKEN)
+F3.4TH:2798          LXI      B,$CODE+^O201*256
+F3.4TH:3174 LINGT2:  LXI      D,$CODE                  ;ZERO ACCUMULATED LINE
+F3.4TH:3181          LXI      H,$CODE+6552             ;SEE IF THE LINE # IS TOO BIG
+F3.4TH:3232          LXI      B,$CODE+40               ;LEAVE BREATHING ROOM
+F3.4TH:4362 IFN      LENGTH,<LXI D,$CODE>              ;FOR THE "NEXT"
+F3.4TH:4780          LXI      D,$CODE+25604            ;[D]=PRECEDENCE=100
+F3.4TH:5703          LXI      B,6+$CODE>               ;THE AMOUNT TO SHOVE
+F3.4TH:5832          LXI      D,$CODE+44               ;DEFAULT SIZE IS 10
+F3.4TH:6023          LXI      D,$CODE+4>               ;INITIALIZE TALLY TO FOUR
+F3.4TH:6054          LXI      B,$CODE+11               ;ASSUME ITS NOT "DIM"
+F3.4TH:6138          LXI      B,$CODE                  ;CURTOL=ZERO
+F3.4TH:6213          LXI      H,$CODE                  ;ZERO [H,L]
+F3.4TH:6709          LXI      H,$CODE                  ;GET DOUBLE ZERO
+F4.4TH: 107 EXTERNAL $CODE    
+F4.4TH: 692          LXI      B,$CODE                  ;ZERO THE PRODUCT REGISTERS
+F4.4TH: 747 FMULTB:  LXI      D,$CODE                  ;GET LO'S OF NUMBER TO ADD, THIS IS SET ABOVE
+F4.4TH:1085          LXI      D,$CODE                  ;ZERO D,E
+F4.4TH:1518 CONDS:   LXI      H,$CODE                  ;ZERO H,L
+F4.4TH:1654          LXI      H,200*400+$CODE          ;GET -32768 JUST IN CASE
+F4.4TH:1692 DMULT:   LXI      H,$CODE                  ;ZERO PRODUCT REGISTERS
+F4.4TH:1789          LXI      H,$CODE                  ;ZERO (HL), THAT IS WHERE THE PRODUCT GOES
+F4.4TH:1845          LXI      H,$CODE                  ;ZERO WHERE WE DO THE SUBTRACTION
+F4.4TH:2445          LXI      B,377+$CODE              ;CLEAR FLAGS: B=DECIMAL PLACE COUNT
+F4.4TH:2622          LXI      D,^D3277+$CODE           ;SEE IF WE WILL OVERFLOW
+F4.4TH:2823          LXI      B,2*400+6+$CODE          ;SET DECIMAL POINT COUNT FOR E NOTATION
+F4.4TH:3068          LXI      B,$CODE                  ;SET THE DECIMAL POINT COUNT AND COMMA COUNT
+F4.4TH:3131          LXI      B,2*400+$CODE            ;B = DECIMAL POINT COUNT
+F4.4TH:3212          LXI      B,6*400+3+$CODE          ;SET DECIMAL POINT COUNT TO 6 AND
+F4.4TH:3330          LXI      D,16*400+$CODE           ;SET D = NUMBER OF DIGITS TO PRINT FOR A DBL
+F4.4TH:3348          LXI      D,6*400+2+$CODE          ;SET UP FLAGS FOR SNG --
+F4.4TH:3760          LXI      D,$CODE                  ;MULTIPLY BY 2 ^ (B-1) INSTEAD OF JUST
+F4.4TH:4003          LXI      B,177*400+$CODE          ;GET 1/4
+F4.4TH:4029          LXI      B,177*400+$CODE          ;GET 1/4
+F4.4TH:4155          LXI      B,201*400+$CODE          ;GET THE CONSTANT 1
+F4.4TH:4228          FUNIO==<^D256*^O312>+^O40+$CODE
+F4.4TH:4264          FUNIO==$CODE+<^O256*^O312>+2
+F4.4TH:4278          FUNIO=$CODE+<^D256*^O312>+2
+F4.4TH:4296          FUNIO=$CODE+<^D256**0312>+1
+F4.4TH:4304          LXI      H,$CODE+^D65535
+F4.4TH:4386          LXI      H,$CODE+16190>
+F4.4TH:4445          LXI      D,$CODE+^D65536-^D50+1
+F4.4TH:4581          LXI      B,$CODE+65520
+F4.4TH:4617          SHLD     $CODE+2  
+
+
+
+*** CONIA
+F3.4TH: 166 EXTERNAL CONSIH,VMOVFA,VMOVAF,ISIGN,FPWRQ,CONIA,GETBCD,VSIGN
+F3.4TH:5404          CALL     CONIA##                  ;CONVERT [A] TO AN INTEGER SIGNED
+
+
+
+*** FFXDXM
+F4.4TH:3327          LXI      D,FFXDXM                 ;GET POINTER TO 1D16
+
+
+
+*** FOICC
+F4.4TH:3214          CALL     FOICC                    ;CHECK IF WE DON'T HAVE TO USE THE COMMAS
+
+
+
+*** FOTZER
+F4.4TH:3218          CP       FOTZER                   ;WE DO, PUT IN ZEROS, THEY WILL LATER BE
+F4.4TH:3228          CNZ      FOTZER                   ;FOFXIS PRESERVES THE CONDITION CODES
+F4.4TH:3365          CP       FOTZER                   ;FOUTZS WILL LATER SUPPRESS THEM
+F4.4TH:3387          CP       FOTZER                   ;THE DECIMAL PLACES
+F4.4TH:3406          CP       FOTZER                   ;PRINT
+F4.4TH:3421 FFXXV3:  CALL     FOTZER                   ;PUT ALL ZEROS BEFORE THE DECIMAL POINT
+F4.4TH:3434 FFXXV5:  CALL     FOTZER                   ;PRINT THE ZEROS
+F4.4TH:3446          CP       FOTZER   
+
+
+
+*** FOTZRC
+F4.4TH:3382          CNZ      FOTZRC                   ;THERE CAN BE COMMAS IN THESE ZEROS
+F4.4TH:3502          CP       FOTZRC                   ;THE DECIMAL POINT COULD COME OUT IN HERE
+
+
+
+*** FOUTCI
+F4.4TH:3070          CALL     FOUTCI                   ;CONVERT THE INTEGER TO DECIMAL
+F4.4TH:3221          CALL     FOUTCI                   ;CONVERT THE NUMBER TO DECIMAL DIGITS
+
+
+
+*** FOUTCV
+F4.4TH:3147          CALL     FOUTCV                   ;CONVERT THE NUMBER TO DECIMAL DIGITS
+F4.4TH:3378          CALL     FOUTCV                   ;CONVERT THE NUMBER TO DECIMAL DIGITS
+F4.4TH:3439 FFXXV6:  CALL     FOUTCV                   ;CONVERT THE NUMBER TO DECIMAL DIGITS
+F4.4TH:3496          CALL     FOUTCV                   ;CONVERT THE NUMBER TO DECIMAL DIGITS
+
+
+
+*** FOUTDP
+F4.4TH:3385          CNZ      FOUTDP                   ;PRINT A DECIMAL POINT IF NECESSARY
+F4.4TH:3423          CALL     FOUTDP                   ;PUT IN A DECIMAL POINT
+
+
+
+*** FOUTND
+F4.4TH:3525          JNZ      FOUTND                   ;WE HAVE A DBL
+
+
+
+*** FPWRQ
+F3.4TH: 166 EXTERNAL CONSIH,VMOVFA,VMOVAF,ISIGN,FPWRQ,CONIA,GETBCD,VSIGN
+F3.4TH:4738          LXI      B,FPWRQ##                ;PLACE TO COERCE RIGHT HAND
+
+
+
+*** GETBCD
+F3.4TH: 166 EXTERNAL CONSIH,VMOVFA,VMOVAF,ISIGN,FPWRQ,CONIA,GETBCD,VSIGN
+F3.4TH:6629          CALL     GETBCD                   ;[D]=LENGTH [B,C]=POINTER AT DATA
+
+
+
+*** MAKINT
+F3.4TH: 169 EXTERNAL TMERR,VMOVE,VALINT,VALSNG,FRCSTR,CHKSTR,MAKINT
+F3.4TH: 750          ADR(MAKINT)>                      ;TURN [H,L] INTO A VALUE IN THE FAC
+F3.4TH:5482          JMP      MAKINT                   ;RETURN THE INTEGER [H,L]
+F3.4TH:5491          JMP      MAKINT>                  ;RETURN THE INTEGER [H,L]
+F3.4TH:6272          JMP      MAKINT>  
+
+
+
+*** RESLST
+F3.4TH:2350          LXI      D,RESLST-1               ;INIT TO RESERVED WORD LIST
+F3.4TH:2438          XCHG                              ;RESLST POINTER INTO [H,L]
+F3.4TH:2444          XCHG                              ;RESLST POINTER INTO [D,E]
+F3.4TH:2691          LXI      D,RESLST                 ;GET RESLST POINTER.
+F3.4TH:2694 RESCR1:  LDAX     D                        ;GET CHARACTER FROM RESLST
+F3.4TH:2695          INX      D                        ;BUMP RESLST POINTER
+F3.4TH:2700          JNZ      RESRCH                   ;NOT AT END OF RESLST YET.
+F3.4TH:2706          INX      H                        ;BUMP RESLST POINTER
+F3.4TH:7483          LXI      D,RESLST                 ;GET RESLST POINTER.
+F3.4TH:7488 RESCR1:  LDAX     D                        ;GET CHARACTER FROM RESLST
+F3.4TH:7489          INX      D                        ;BUMP RESLST POINTER
+F3.4TH:7497          JNZ      RESRCH                   ;NOT AT END OF RESLST YET.
+F3.4TH:7508          INX      H                        ;BUMP RESLST POINTER
+
+
+
+*** RESTORE
+F3.4TH: 770          XTHL                              ;PUT RETURN ADDRESS BACK AND RESTORE
+F3.4TH:1080          ADR(RESTORE)
+F3.4TH:1837          POP      H                        ;RESTORE [H,L]
+F3.4TH:1854          XCHG                              ;RESTORE [H,L] FROM [D,E]
+F3.4TH:1979          POP      D                        ;RESTORE LINE #
+F3.4TH:2217          CALL     RESTORE                  ;RESTORE DATA
+F3.4TH:2435 NTHIS:   POP      H                        ;RESTORE TEXT STRING
+F3.4TH:2681 PRIT4:   POP      H                        ;RESTORE POINTER TO START OF TEXT
+F3.4TH:2769                                            ;AND RESTORE [H,L] AS TEXT POINTER AT
+F3.4TH:2838                                            ;ONTO THE STACK AND RESTORE THE TEXT POINTER
+F3.4TH:2923          XCHG                              ;RESTORE THE TEXT POINTER
+F3.4TH:2956          XCHG                              ;RESTORE THE TEXT POINTER
+F3.4TH:2982 SUBTTL   RESTORE, STOP, END, LINGET, CHRCON
+F3.4TH:3082          XCHG                              ;RESTORE [H,L]
+F3.4TH:3158          POP      H                        ;RESTORE THE TEXT POINTER
+F3.4TH:3296 RUNC2:   PUSH     B                        ;RESTORE RETURN ADDRESS
+F3.4TH:3348 ; "RETURN" RESTORES THE LINE NUMBER AND TEXT POINTER ON THE STACK
+F3.4TH:3882          POP      PSW                      ;RESTORE THE COUNT
+F3.4TH:4326          XCHG>                             ;RESTORE TEXT POINTER
+F3.4TH:4448          LHLD     TEMP                     ;RESTORE THE TEXT POINTER
+F3.4TH:4524 RETAOP:  LHLD     TEMP2                    ;RESTORE TEXT PTR
+F3.4TH:4742          MVI      D,127                    ;RESTORE THE PRECEDENCE
+F3.4TH:4981          POP      H                        ;RESTORE THE FAC
+F3.4TH:5118          POP      H                        ;RESTORE THE TEXT POINTER
+F3.4TH:5207          POP      H                        ;RESTORE THE FUNCTION NUMBER
+F3.4TH:5335          POP      D                        ;RESTORE 1ST DESC. POINTER
+F3.4TH:5751          POP      H                        ;RESTORE THE TEXT POINTER
+F3.4TH:5761                                            ;AND RESTORE THE TEXT POINTER
+F3.4TH:5771          POP      H>                       ;RESTORE THE TEXT POINTER
+F3.4TH:5774          STA      DIMFLG>                  ;RESTORE IT
+F3.4TH:6340                                            ;MEMORY, RESTORE THE TXTPTR
+F3.4TH:6501          POP      D                        ;RESTORE POINTER TO OSCTMP
+F3.4TH:6518                                            ;AND RESTORE [H,L] AS THE DESCRIPTOR POINTER
+F3.4TH:7387          MOV      M,B                      ;RESTORE THE CHARACTER
+F3.4TH:7464 PRIT4:   POP      H                        ;RESTORE POINTER TO START OF TEXT
+F3.4TH:7723          POP      H                        ;RESTORE THE TEXT POINTER
+F4.4TH:1037          MOV      B,A                      ;RESTORE EXPONENT
+F4.4TH:1260 ; MANTISSA IS RESTORED, AND THE COMPLEMENT OF THE SIGN IS PLACED
+F4.4TH:1267          ORI      200                      ;RESTORE THE HIDDEN ONE
+F4.4TH:1277          ORI      200                      ;RESTORE THE HIDDEN ONE
+F4.4TH:3424          MOV      C,A                      ;RESTORE C
+
+
+
+*** ROUTINES
+F3.4TH: 109 RADIX    10                                ;THROUGHOUT THE NON-MATH PACKAGE ROUTINES
+F3.4TH: 180     RST SUBROUTINES
+F3.4TH: 256         FUNCTION ROUTINES IN THE ORDER OF THE
+F3.4TH: 335         MOST SMALL ROUTINES ARE FAIRLY SIMPLE
+F3.4TH: 730 SUBTTL   RST ROUTINES
+F3.4TH:1145 DBLDSP:  ADR(DADD)                         ;DOUBLE PRECISION ROUTINES
+F3.4TH:1155 SNGDSP:  ADR(FADD)                         ;SINGLE PRECISION ROUTINES
+F3.4TH:1165 INTDSP:  ADR(IADO)                         ;INTEGER ROUTINES
+F3.4TH:1730 SUBTTL   GENERAL STORAGE MANAGEMENT ROUTINES
+F3.4TH:1814 ; IT IS ALSO CALLED BY ROUTINES SUCH AS GOSUB AND FOR
+F3.4TH:1818 ; ROUTINES WHICH MERELY USE AND FREE UP THE GUARANTEED
+F3.4TH:3551          LXI      H,FRCTBL                 ;TABLE OF FORCE ROUTINES
+F3.4TH:3877                                            ;SOME ROUTINES DEPEND ON CRDO
+F3.4TH:4475 ; THESE ROUTINES CHECK FOR A CERTAIN VALTYP
+F3.4TH:4962                                            ;FOR THE SINGLE PRECISION OPERATOR ROUTINES
+F3.4TH:6207 SUBTTL   FRE FUNCTION AND INTEGER TO FLOATING ROUTINES
+F3.4TH:6453 IFN      STRING,                           ;STRING HANDLING SUBROUTINES
+F4.4TH:1165 SUBTTL   FLOATING POINT MOVEMENT ROUTINES
+F4.4TH:1433 SUBTTL   CONVERSION ROUTINES BETWEEN INTEGER, SINGLE AND DOUBLE PRECISION
+F4.4TH:1687 SUBTTL   INTEGER ARITHMETIC ROUTINES
+F4.4TH:1938 SUBTTL   DOUBLE PRECISION ARITHMETIC ROUTINES
+
+
+
+*** UMULT
+F3.4TH: 157 IFN      MULDIM,<EXTERNAL UMULT>   
+F3.4TH:6068          CALL     UMULT                    ;MULTIPLY [B,C]=NEWMAX BY CURTOL=[D,E]
+F3.4TH:6155          CALL     UMULT                    ;CURTOL=CURTOL*CURRENT MAXIMUM
+
+
+
+*** VMOVE
+F3.4TH: 169 EXTERNAL TMERR,VMOVE,VALINT,VALSNG,FRCSTR,CHKSTR,MAKINT
+F3.4TH:3540          CALL     VMOVE>   
+F3.4TH:6593          CALL     VMOVE>                   ;AND MOVE THE VALUE INTO A TEMPORARY
+
+
+
