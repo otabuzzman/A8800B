@@ -2900,7 +2900,7 @@
 2900          SHLD     CURLIN                   ;SETUP CURLIN WITH THE CURRENT LINE #
 2901 
 2902 
-2903 IFE      LENGTH-2,                         ;TRACE FEATURE
+2903 IFE      LENGTH-2,<                        ;TRACE FEATURE
 2904          LDA      TRCFLG                   ;SEE IF TRACE IS ON
 2905 
 2906 
@@ -3037,7 +3037,7 @@
 3037 
 3038 
 3039 DIRIS:   
-3040 IFN      CONTRW   
+3040 IFN      CONTRW,< 
 3041          XRA      A        
 3042          STA      CNTWFL>                  ;FORCE OUTPUT
 3043 
@@ -3663,7 +3663,7 @@
 3663 IFE      LENGTH,< 
 3664          POP      PSW      
 3665          POPR                              ;POP OFF NUMBER
-3666 IFN      STRING   
+3666 IFN      STRING,< 
 3667          XTHL>                             ;COMPARE FORMULA TYPES
 3668 IFE      STRING,<PUSH H>                   ;SAVE THE TEXT POINTER
 3669          PUSH     PSW                      ;RESAVE RELATIONAL MEMORIES
@@ -3835,7 +3835,7 @@
 3835 
 3836          OUTCHR   
 3837 IFN      STRING,< 
-3838 IFE      LENGTH-21
+3838 IFE      LENGTH-2,<
 3839          ORA      A                        ;TURN OFF THE ZERO FLAG
 3840 STRDON:  CZ       STRPRT>  
 3841 
@@ -6349,7 +6349,7 @@
 6349          CALL     PARCHK                   ;EVALUATE THE VALUE TO BE PASSED
 6350 
 6351 
-6352 IFN      LENGTH-21
+6352 IFN      LENGTH-2,<
 6353 IFN      STRING,<CALL CHKNUM>>             ;ARG CANNOT BE STRING
 6354          XTHL                              ;[H,L]=POINTER TO FUNCTION DEF
 6355                                            ;TEXT POINTER GOES ON THE STACK
@@ -6450,7 +6450,7 @@
 6450 
 6451 PAGE     
 6452 SUBTTL   STRING FUNCTIONS
-6453 IFN      STRING,                           ;STRING HANDLING SUBROUTINES
+6453 IFN      STRING,<                          ;STRING HANDLING SUBROUTINES
 6454 ; 
 6455 ; THE STR$ FUNCTION TAKES A NUMBER AND GIVES
 6456 ; A STRING WITH THE CHARACTERS THE OUTPUT OF THE NUMBER
@@ -6972,7 +6972,7 @@
 6972 
 6973 MOVINS:  POP      H                        ;GET RETURN ADDR
 6974          XTHL                              ;PUT BACK, BUT GET DESC.
-6975 IFE      LENGTH-21
+6975 IFE      LENGTH-2,<
 6976          MOV      A,M                      ;[A]=STRING LENGTH
 6977          INX      H        
 6978          MOV      C,M                      ;[B,C]=POINTER AT STRING DATA
