@@ -2662,7 +2662,7 @@
 2662          CALL     FLOAT                    ;CONVERT THE DIGIT TO SINGLE PRECISION
 2663          CALL     CONDS                    ;NOW, CONVERT THE DIGIT TO DOUBLE PRECISION
 2664          CALL     DADD                     ;ADD IN THE DIGIT
-2665          JMP      FINDGE                   ;GET THE FLAGS OFF THE STACK AND WE ARE DONE
+2665          JMP      FINDGE>                  ;GET THE FLAGS OFF THE STACK AND WE ARE DONE
 2666 
 2667 IFN      EXTFNC,< 
 2668 ; SUBROUTINE FOR FIN, LOG
@@ -2726,7 +2726,7 @@
 2726          LXI      H,STROUI##               ;PUT PRINT STRING ADDRESS ON STACK SO WE WILL
 2727 
 2728 
-2729          PUSH                              ;RETURN TO IT AND DO AN "INX H"
+2729          PUSH     H>                       ;RETURN TO IT AND DO AN "INX H"
 2730                                            ;THIS GETS RID OF THE SPACE FOR THE SIGN AT
 2731                                            ;THE BEGINNING OF A LINE NUMBER
 2732                                            ;FALL INTO FOUT
