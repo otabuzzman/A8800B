@@ -7288,12 +7288,12 @@
 7288                                            ;UNLESS THE WAIT IS BEING DONE ON CHANNEL
 7289                                            ;ZERO. HOWEVER A RESTART AT 0 IS OK.
 7290          RET>     
-7291 IFN      STRING,< 
-7292                                            ;USED BY RIGHTS AND LEFTS FOR PARAMETER CHECKING AND SETUP
+7291 IFN STRING,<> ; note: closing angle bracket missing in PDF (guess: remaining line fragment)
+7292 ; USED BY RIGHT$ AND LEFT$ FOR PARAMETER CHECKING AND SETUP
 7293 PREAM:   XCHG                              ;PUT THE TEXT POINTER IN [H,L]
 7294          SYNCHK   ")"                      ;PARAM LIST SHOULD END
 7295 
-7296                                            ;USED BY MID$ FOR PARAMETER CHECKING AND SETUP
+7296 ; USED BY MID$ FOR PARAMETER CHECKING AND SETUP
 7297 PREAM2:  POP      B                        ;GET RETURN ADDR OFF STACK
 7298          POP      D                        ;GET LENGTH OF ARG OFF STACK
 7299          PUSH     B                        ;SAVE RETURN ADDR BACK ON

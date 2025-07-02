@@ -4,6 +4,8 @@ BEGIN {
     level = 0
 }
 
+$2 ~ /;/ { next }
+
 {
     output = ""
     for (i = 1; i <= length($0); i++) {

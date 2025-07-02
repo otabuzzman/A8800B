@@ -2719,10 +2719,7 @@
 2719          CALL     FLOATR                   ;CONVERT TO FLOATING POINT
 2720 
 2721 
-2722 IFE      LENGTH-2,<
-2723          CALL     CONISS                   ;PUT THE LINE NUMBER IN THE FAC AS AN INTEGER
-2724          XRA      A                        ;SET FORMAT TO FREE FORMAT
-2725          CALL     FOUINI                   ;SET UP THE SIGN
+2722 ; IFE LENGTH-2,< ; note: see handwritten notes on PDF page 129
 2726          LXI      H,STROUI##               ;PUT PRINT STRING ADDRESS ON STACK SO WE WILL
 2727 
 2728 
@@ -2731,8 +2728,11 @@
 2731                                            ;THE BEGINNING OF A LINE NUMBER
 2732                                            ;FALL INTO FOUT
 2733 IFE      LENGTH-2,<
-2734          PUSH     B                        ;PUT DUMMY FIELD LENGTHS ON STACK
-2735          JMP      STROUI##                 ;PRINT THE NUMBER
+2723          CALL     CONISS                   ;PUT THE LINE NUMBER IN THE FAC AS AN INTEGER
+2724          XRA      A                        ;SET FORMAT TO FREE FORMAT
+2725 CALL FOUINI ;SET UP THE SIGN ; note: lines 2723-2725 see handwritten notes on PDF page 129
+2734 ; PUSH B ;PUT DUMMY FIELD LENGTHS ON STACK ; note: see handwritten notes on PDF page 129
+2735          JMP      STROUI##>                ;PRINT THE NUMBER
 2736 
 2737 
 2738 ; FLOATING OUTPUT OF FAC
