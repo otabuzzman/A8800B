@@ -1,6 +1,8 @@
 # Altair 8800 BASIC
 A transcript of the PDF containing the [Altair 8800 BASIC source code](https://images.gatesnotes.com/12514eb8-7b51-008e-41a9-512542cf683b/34d561c8-cf5c-4e69-af47-3782ea11482e/Original-Microsoft-Source-Code.pdf) shared by Bill Gates.
 
+The transcript largely corresponds to the PDF. Addresses and opcodes of the Macro-10 Assembler have been removed, comment indentations standardized, and typos corrected. Of course, there are most likely previously undetected transcription errors.
+
 ### Method and tools
 1. OCR with [AWS Textract](https://aws.amazon.com/textract/)
 2. Coarse layout reconstruction with AWK
